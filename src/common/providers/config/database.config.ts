@@ -1,4 +1,3 @@
-import { DATABASE_CONFIG } from '../../constants';
 import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import * as Joi from 'joi';
@@ -68,7 +67,7 @@ export class DatabaseConfig extends BaseConfig<DatabaseConfigProps>
       database: this.database,
       synchronize: this.synchronize,
       logging: this.logging,
-      entities: [`${__dirname}/../../../entities/*.entity.{ts,js}`],
+      entities: [`${__dirname}/../../../entities/*.entity.{ts,js}`]
     } as TypeOrmModuleOptions;
   }
 }

@@ -1,13 +1,13 @@
 import {
   BaseEntity,
-  BeforeInsert,
-  BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({name: 'users'})
+@Entity({ name: 'users' })
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -37,24 +37,9 @@ export class User extends BaseEntity {
   })
   countryCode: number;
 
-  @Column({
-    type: 'timestamp',
-  })
+  @UpdateDateColumn({ name: 'updatedAt' })
   updatedAt: Date;
 
-  @Column({
-    type: 'timestamp',
-  })
+  @CreateDateColumn({ name: 'createdAt' })
   createdAt: Date;
-
-  @BeforeInsert()
-  updateCreationDate(): void {
-    this.createdAt = new Date();
-  }
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  updateUpdatedAt(): void{
-    this.updatedAt = new Date();
-  }
 }
