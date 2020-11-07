@@ -1,8 +1,10 @@
-import { INestApplication } from '@nestjs/common';
+import { AppConfig } from './../providers/config/app.config';
+import { INestApplication, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export async function setupSwagger(app: INestApplication): Promise<void> {
   const packageConfig = await import('../../../package.json');
+  const config = app.get(AppConfig);
 
   const options = new DocumentBuilder()
     .setTitle(packageConfig.name)
@@ -14,4 +16,6 @@ export async function setupSwagger(app: INestApplication): Promise<void> {
   const document = SwaggerModule.createDocument(app, options);
 
   SwaggerModule.setup('docs', app, document);
+
+  Logger.log(`Swagger documentation available on ${config.url}${config.port ? `:${config.port}` : ''}`);
 }

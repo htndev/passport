@@ -9,7 +9,6 @@ import * as cors from 'cors';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(AppConfig);
-  console.log(config);
 
   app.use(cors({
     allowedHeaders: config.allowedHeaders

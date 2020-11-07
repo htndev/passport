@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { DatabaseType } from 'typeorm';
 
@@ -16,8 +15,7 @@ interface DatabaseConfigProps {
 }
 
 @Injectable()
-export class DatabaseConfig extends BaseConfig<DatabaseConfigProps>
-  implements TypeOrmOptionsFactory {
+export class DatabaseConfig extends BaseConfig<DatabaseConfigProps> {
   getSchema(): Joi.ObjectSchema {
     return Joi.object().append({
       DB_TYPE: Joi.string().default('postgres'),
@@ -56,18 +54,5 @@ export class DatabaseConfig extends BaseConfig<DatabaseConfigProps>
 
   get synchronize(): boolean {
     return this.config.DB_SYNCHRONIZE;
-  }
-
-  createTypeOrmOptions(): TypeOrmModuleOptions {
-    return {
-      type: this.type,
-      host: this.host,
-      username: this.username,
-      password: this.password,
-      database: this.database,
-      synchronize: this.synchronize,
-      logging: this.logging,
-      entities: [`${__dirname}/../../../entities/*.entity.{ts,js}`]
-    } as TypeOrmModuleOptions;
   }
 }

@@ -1,9 +1,14 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpService, Injectable } from '@nestjs/common';
 import { retry } from 'rxjs/operators';
 import { LocationInfo } from '../common/types';
 
+enum LocationServiceResponseStatuses {
+  SUCCESS = 'success',
+  FAIL = 'fail'
+}
+
 interface IpAPIResponse {
-  readonly status: 'success' | 'fail';
+  readonly status: LocationServiceResponseStatuses;
   readonly country: string;
   readonly countryCode: string;
   readonly region: string;
@@ -25,11 +30,14 @@ export class LocationIdentifierService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  async getInfo(ip: string): Promise<any> {
+  async getInfo(ip: string): Promise<LocationInfo> {
     const { data: ipInfo } = await this.httpService
       .get<IpAPIResponse>(this.getUrl(ip))
       .pipe(retry(5))
       .toPromise();
+    if (ipInfo.status === LocationServiceResponseStatuses.FAIL) {
+      throw new BadRequestException(`Cannot parse an IP address '${ip}'. Probably, it's over the range`);
+    }
     return this.map(ipInfo);
   }
 
@@ -37,15 +45,10 @@ export class LocationIdentifierService {
     return `${this.url}/${ip}`;
   }
 
-  private map = ({
-    countryCode: code,
-    country,
-    regionName: region,
-    city,
-  }: IpAPIResponse): LocationInfo => ({
+  private map = ({ countryCode: code, country, regionName: region, city }: IpAPIResponse): LocationInfo => ({
     country,
     code,
     region,
-    city,
+    city
   });
 }

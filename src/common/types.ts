@@ -9,3 +9,7 @@ export enum NodeEnv {
   PRODUCTION = 'production',
   DEVELOPMENT = 'development'
 }
+
+export const DatabaseErrorMessages = {
+  [23505]: 'Duplicate'
+}

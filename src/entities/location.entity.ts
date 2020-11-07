@@ -1,14 +1,9 @@
-import {
-  BaseEntity,
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn
-} from 'typeorm';
+import { ExtendedBaseEntity } from './base.entity';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { User } from './user.entity';
 
-@Entity({name: 'locations'})
-export class Location extends BaseEntity {
+@Entity({ name: 'locations' })
+export class Location extends ExtendedBaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,28 +23,15 @@ export class Location extends BaseEntity {
   region: string;
 
   @Column({
-    type: 'varchar'
+    type: 'varchar',
+    unique: true
   })
   city: string;
 
-  @Column({
-    type: 'timestamp',
-  })
-  updatedAt: Date;
-
-  @Column({
-    type: 'timestamp',
-  })
-  createdAt: Date;
-
-  @BeforeInsert()
-  updateCreationDate(): void {
-    this.createdAt = new Date();
-  }
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  updateUpdatedAt(): void{
-    this.updatedAt = new Date();
-  }
+  @OneToMany(
+    type => User,
+    user => user.countryCode,
+    { eager: true }
+  )
+  users: User[];
 }

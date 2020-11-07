@@ -1,27 +1,56 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { AppConfig } from './common/providers/config/app.config';
+import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { DatabaseConfig } from './common/providers/config/database.config';
-import { LocationIdentifierModule } from './location-identifier/location-identifier.module';
+import { SecurityConfig } from './common/providers/config/security.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ 
+    PassportModule.register({
+      defaultStrategy: 'jwt'
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigManagerModule],
+      inject: [SecurityConfig],
+      // useFactory: async ({jwtTokenSecret: secret}: SecurityConfig) => {
+      useFactory: async (config: SecurityConfig) => {
+        console.log(config);
+        return {
+          secret: config.jwtTokenSecret,
+          // signOptions: 
+        };
+      }
+    }),
+    ConfigModule.forRoot({
       envFilePath: '.dev.env',
       ignoreEnvFile: process.env.NODE_ENV === 'production'
-     }),
-    TypeOrmModule.forRootAsync({
-      useClass: DatabaseConfig
     }),
-    LocationIdentifierModule,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigManagerModule],
+      inject: [DatabaseConfig],
+      useFactory: async ({ type, host, username, password, database, synchronize, logging }: DatabaseConfig) =>
+        ({
+          type,
+          host,
+          username,
+          password,
+          database,
+          synchronize,
+          logging,
+          entities: [`${__dirname}/entities/*.entity.{ts,js}`]
+        } as TypeOrmModuleOptions)
+    }),
     AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService, AppConfig],
+  providers: [AppService, AppConfig]
 })
 export class AppModule {}
