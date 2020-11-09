@@ -12,6 +12,7 @@ interface DatabaseConfigProps {
   DB_NAME: string;
   DB_LOGGING: boolean;
   DB_SYNCHRONIZE: boolean;
+  DB_CONNECTION_RETRY_ATTEMPTS: number;
 }
 
 @Injectable()
@@ -25,6 +26,7 @@ export class DatabaseConfig extends BaseConfig<DatabaseConfigProps> {
       DB_NAME: Joi.string().required(),
       DB_LOGGING: Joi.boolean().default(true),
       DB_SYNCHRONIZE: Joi.boolean().required(),
+      DB_CONNECTION_RETRY_ATTEMPTS: Joi.number().default(5)
     });
   }
 
@@ -54,5 +56,9 @@ export class DatabaseConfig extends BaseConfig<DatabaseConfigProps> {
 
   get synchronize(): boolean {
     return this.config.DB_SYNCHRONIZE;
+  }
+
+  get dbConnectionRetryAttempts(): number {
+    return this.config.DB_CONNECTION_RETRY_ATTEMPTS;
   }
 }

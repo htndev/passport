@@ -18,7 +18,7 @@ export class LocationRepository extends Repository<Location> {
 
   async getOrInsertLocation(location: LocationInfo): Promise<number> {
     const foundLocation = await this.findLocation(location);
-    
+
     if(foundLocation) {
       return foundLocation.id;
     }

@@ -1,9 +1,11 @@
 import { ErrorMessage } from './../common/constants';
 import { AuthService } from './auth.service';
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { NewUserDto, UserDto } from './dto/user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -24,7 +26,6 @@ export class AuthController {
     description: 'User registered successfully'
   })
   async registration(@Body(ValidationPipe) user: NewUserDto): Promise<any> {
-    console.log(user);
     return this.authService.register(user);
   }
 
@@ -37,7 +38,13 @@ export class AuthController {
     status: 200,
     description: 'User authorized'
   })
-  async signIn(@Body(ValidationPipe) user: UserDto): Promise<any> {
+  async signIn(@Body(ValidationPipe) user: UserDto): Promise<{ accessToken: string }> {
     return this.authService.signIn(user);
+  }
+
+  @Post('/test')
+  @UseGuards(AuthGuard())
+  test(@Req() req: Request): void {
+    console.log(req);
   }
 }

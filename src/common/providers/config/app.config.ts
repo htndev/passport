@@ -7,8 +7,8 @@ interface AppConfigProps {
   ALLOWED_HEADERS: string;
   ALLOWED_DOMAINS: string;
   ENABLE_SWAGGER: boolean;
+  APP_HOSTNAME: string;
   URL: string;
-  JWT_TOKEN_SECRET: string;
 }
 
 @Injectable()
@@ -19,7 +19,7 @@ export class AppConfig extends BaseConfig<AppConfigProps> {
       ALLOWED_HEADERS: Joi.string().default('*'),
       ALLOWED_DOMAINS: Joi.string().default('*'),
       ENABLE_SWAGGER: Joi.boolean().default(true),
-      URL: Joi.string().default('http://localhost')
+      APP_HOSTNAME: Joi.string().default('localhost')
     });
   }
 
@@ -39,7 +39,18 @@ export class AppConfig extends BaseConfig<AppConfigProps> {
     return this.config.ENABLE_SWAGGER;
   }
 
+  get appHostname(): string {
+    return this.config.APP_HOSTNAME;
+  }
+
+  get isLocalhost(): boolean {
+    return this.appHostname.includes('localhost');
+  }
+
   get url(): string {
-    return this.config.URL;
+    const protocol = this.isLocalhost ? 'http' : 'https';
+    const port = this.isLocalhost ? `:${this.port}` : '';
+
+    return `${protocol}://${this.appHostname}${port}`;
   }
 }

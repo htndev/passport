@@ -6,10 +6,7 @@ import { ErrorMessage } from '../common/constants';
 import { NewUserDto, UserDto } from '../auth/dto/user.dto';
 import { User } from '../entities/user.entity';
 
-interface UserCredentials {
-  email: string;
-  password: string;
-}
+type PromisePick<T, P extends keyof T> = Promise<Pick<T, P>>;
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -18,7 +15,7 @@ export class UserRepository extends Repository<User> {
     username,
     password,
     countryCode
-  }: Omit<NewUserDto, 'ip'> & { countryCode: number }): Promise<any> {
+  }: Omit<NewUserDto, 'ip'> & { countryCode: number }): Promise<User> {
     const user = new User();
     const { password: hashedPassword } = await this.hashPassword(password);
 
@@ -30,17 +27,32 @@ export class UserRepository extends Repository<User> {
     return user.save();
   }
 
-  async findUserByEmail(email: string): Promise<User> {
+  async findUserByEmail(email: string): PromisePick<User, 'email'> {
     const query = this.createQueryBuilder('user')
       .select(['user.email'])
       .where('email = :email', { email });
     return query.getOne();
   }
 
-  async findUserByUsername(username: string): Promise<User> {
+  async findUserByUsername(username: string): PromisePick<User, 'username'> {
     const query = this.createQueryBuilder('user')
       .select(['user.username'])
       .where('username = :username', { username });
+    return query.getOne();
+  }
+
+  async findUserByEmailAndUsername({
+    email,
+    username
+  }: {
+    email: string;
+    username: string;
+  }): PromisePick<User, 'email' | 'username'> {
+    const query = this.createQueryBuilder('user')
+      .select(['user.username', 'user.email'])
+      .where('username = :username', { username })
+      .andWhere('email = :email', { email });
+
     return query.getOne();
   }
 
@@ -52,7 +64,7 @@ export class UserRepository extends Repository<User> {
     };
   }
 
-  async signIn({ email, password }: UserDto): Promise<any> {
+  async signIn({ email, password }: UserDto): Promise<{ username: string; email: string }> {
     const user = await this.getUserCredentials({ email });
 
     if (!user) {
@@ -66,15 +78,18 @@ export class UserRepository extends Repository<User> {
     }
 
     return {
-      authorized: true
-    }
+      username: user.username,
+      email: user.email
+    };
   }
 
-  private async getUserCredentials({ email }): Promise<User> {
+  private async getUserCredentials({
+    email
+  }): PromisePick<User, 'username' | 'email' | 'password' | 'comparePasswords'> {
     const query = this.createQueryBuilder('user');
 
     return query
-      .select(['user.email', 'user.password'])
+      .select(['user.username', 'user.email', 'user.password'])
       .where('email = :email', { email })
       .getOne();
   }
