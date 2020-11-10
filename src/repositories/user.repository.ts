@@ -1,3 +1,4 @@
+import { PromisePick } from '../common/types';
 import { ConflictException } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
 import { EntityRepository, Repository } from 'typeorm';
@@ -5,8 +6,6 @@ import { EntityRepository, Repository } from 'typeorm';
 import { ErrorMessage } from '../common/constants';
 import { NewUserDto, UserDto } from '../auth/dto/user.dto';
 import { User } from '../entities/user.entity';
-
-type PromisePick<T, P extends keyof T> = Promise<Pick<T, P>>;
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

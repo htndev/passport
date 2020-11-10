@@ -17,5 +17,5 @@ export async function setupSwagger(app: INestApplication): Promise<void> {
 
   SwaggerModule.setup('docs', app, document);
 
-  Logger.log(`Swagger documentation available on ${config.url}${config.port ? `:${config.port}` : ''}`);
+  Logger.verbose(`Swagger documentation available on ${config.url}/docs`);
 }

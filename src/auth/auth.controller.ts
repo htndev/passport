@@ -1,11 +1,11 @@
-import { ErrorMessage } from './../common/constants';
-import { AuthService } from './auth.service';
-import { Body, Controller, Post, Req, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Request, Response } from 'express';
 
+import { ErrorMessage } from './../common/constants';
+import { JwtGuard } from './../common/guards/auth/jwt.guard';
+import { AuthService } from './auth.service';
 import { NewUserDto, UserDto } from './dto/user.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -38,12 +38,18 @@ export class AuthController {
     status: 200,
     description: 'User authorized'
   })
-  async signIn(@Body(ValidationPipe) user: UserDto): Promise<{ accessToken: string }> {
-    return this.authService.signIn(user);
+  async signIn(@Body(ValidationPipe) user: UserDto, @Res() res: Response): Promise<any> {
+    return res.status(200).json(await this.authService.signIn(user, res));
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('/tokens')
+  async getTokens(): Promise<any> {
+    // return this.authService.getTokens();
   }
 
   @Post('/test')
-  @UseGuards(AuthGuard())
+  @UseGuards(JwtGuard)
   test(@Req() req: Request): void {
     console.log(req);
   }

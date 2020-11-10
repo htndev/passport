@@ -19,7 +19,7 @@ export class AppConfig extends BaseConfig<AppConfigProps> {
       ALLOWED_HEADERS: Joi.string().default('*'),
       ALLOWED_DOMAINS: Joi.string().default('*'),
       ENABLE_SWAGGER: Joi.boolean().default(true),
-      APP_HOSTNAME: Joi.string().default('localhost')
+      APP_HOSTNAME: Joi.string().required()
     });
   }
 

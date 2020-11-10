@@ -1,4 +1,7 @@
-import { AuthScope } from './../common/constants';
+import { Request, Response } from 'express';
+import { CookieService } from './../common/providers/cookie/cookie.service';
+import { MicroserviceToken } from '../common/types';
+import { TokenService } from '../common/providers/token/token.service';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +11,8 @@ import { UserRepository } from '../repositories/user.repository';
 import { LocationIdentifierService } from '../common/providers/location-identifier/location-identifier.service';
 import { NewUserDto, UserDto } from './dto/user.dto';
 
+export type MicroserviceTokens = { tokens: MicroserviceToken };
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -16,10 +21,11 @@ export class AuthService {
     @InjectRepository(LocationRepository)
     private readonly locationRepository: LocationRepository,
     private readonly locationIdentifier: LocationIdentifierService,
-    private readonly jwtService: JwtService
+    private readonly tokenService: TokenService,
+    private readonly cookieService: CookieService
   ) {}
 
-  async register({ ip, email, password, username }: NewUserDto): Promise<any> {
+  async register({ ip, email, password, username }: NewUserDto): Promise<MicroserviceTokens> {
     const userWithEmail = await this.userRepository.findUserByEmail(email);
 
     if (userWithEmail) {
@@ -36,31 +42,27 @@ export class AuthService {
 
     const locationId = await this.locationRepository.getOrInsertLocation(ipInfo);
 
-    const registered = await this.userRepository.signUp({
+    await this.userRepository.signUp({
       email,
       username,
       countryCode: locationId,
       password
     });
 
-    return registered;
+    const tokens = await this.tokenService.generateTokens({ email, username });
+
+    return { tokens };
   }
 
-  async signIn(user: UserDto): Promise<{ accessToken: string }> {
+  async signIn(user: UserDto, res: Response): Promise<MicroserviceTokens> {
     const userData = await this.userRepository.signIn(user);
 
-    const payload = {
-      ...userData,
-      scope: this.setScopes(AuthScope.PASSPORT, AuthScope.MEDIA),
-      authority: AuthScope.PASSPORT
-    };
+    const tokens = await this.tokenService.generateTokens(userData);
 
-    const accessToken = await this.jwtService.signAsync(payload);
+    // this.cookieService.setCookie(res, 'qwe', 'qwe');
 
-    return { accessToken };
-  }
+    console.log(tokens);
 
-  private setScopes(...scopes: AuthScope[]): string {
-    return scopes.join(',');
+    return { tokens };
   }
 }

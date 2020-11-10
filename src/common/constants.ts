@@ -1,8 +1,16 @@
 export enum ErrorMessage {
   WRONG_EMAIL_OR_PASSWORD = 'Wrong email or password'
-}
+};
 
-export enum AuthScope {
+export enum Microservice {
   PASSPORT = 'passport',
-  MEDIA = 'media'
-}
+  MEDIA = 'media',
+  STUDIO = 'studio'
+};
+
+export const MICROSERVICES: Microservice[] = [Microservice.PASSPORT, Microservice.STUDIO, Microservice.MEDIA];
+
+export enum NodeEnv {
+  PRODUCTION = 'production',
+  DEVELOPMENT = 'development'
+};

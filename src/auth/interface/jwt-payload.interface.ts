@@ -1,7 +1,12 @@
-import { AuthScope } from './../../common/constants';
-export interface JwtPayload {
+export interface UserJwtPayload {
   username: string;
   email: string;
-  scope: string;
-  authority: AuthScope;
+}
+
+export interface JwtPayload extends UserJwtPayload {
+  scope?: string;
+  iss?: string;
+  iat?: number;
+  exp?: number;
+  sub?: string;
 }

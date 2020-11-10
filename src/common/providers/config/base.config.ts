@@ -1,4 +1,4 @@
-import { NodeEnv } from './../../types';
+import { NodeEnv } from './../../constants';
 import { Injectable } from '@nestjs/common';
 import * as Joi from 'joi';
 

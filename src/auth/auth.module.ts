@@ -1,3 +1,4 @@
+import { CookieService } from './../common/providers/cookie/cookie.service';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -7,8 +8,9 @@ import { SecurityConfig } from 'src/common/providers/config/security.config';
 
 import { ConfigModule as ConfigManagerModule } from '../common/providers/config/config.module';
 import { LocationIdentifierModule } from '../common/providers/location-identifier/location-identifier.module';
-import { UserRepository } from '../repositories/user.repository';
 import { LocationRepository } from '../repositories/location.repository';
+import { UserRepository } from '../repositories/user.repository';
+import { TokenService } from './../common/providers/token/token.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
@@ -24,10 +26,10 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       imports: [ConfigManagerModule],
       inject: [SecurityConfig, AppConfig],
       useFactory: (
-        { jwtTokenSecret: secret, jwtTokenExpiresIn: expiresIn }: SecurityConfig,
+        { jwtPassportTokenSecret: secret, jwtTokenExpiresIn: expiresIn }: SecurityConfig,
         { appHostname: issuer }: AppConfig
       ) => ({
-        secret: secret,
+        secret,
         signOptions: { expiresIn, issuer, subject: 'auth' }
       })
     }),
@@ -36,7 +38,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     ConfigManagerModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, TokenService, CookieService],
   exports: [JwtStrategy, PassportModule]
 })
 export class AuthModule {}
