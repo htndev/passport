@@ -60,9 +60,6 @@ export class AuthService {
     const tokens = await this.tokenService.generateTokens(userData);
 
     // this.cookieService.setCookie(res, 'qwe', 'qwe');
-
-    console.log(tokens);
-
     return { tokens };
   }
 }
