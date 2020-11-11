@@ -3,7 +3,6 @@ import { CookieService } from './../common/providers/cookie/cookie.service';
 import { MicroserviceToken } from '../common/types';
 import { TokenService } from '../common/providers/token/token.service';
 import { ConflictException, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { LocationRepository } from '../repositories/location.repository';
@@ -11,7 +10,7 @@ import { UserRepository } from '../repositories/user.repository';
 import { LocationIdentifierService } from '../common/providers/location-identifier/location-identifier.service';
 import { NewUserDto, UserDto } from './dto/user.dto';
 
-export type MicroserviceTokens = { tokens: MicroserviceToken };
+export type MicroserviceTokens = { tokens: Required<MicroserviceToken> };
 
 @Injectable()
 export class AuthService {
@@ -56,10 +55,10 @@ export class AuthService {
 
   async signIn(user: UserDto, res: Response): Promise<MicroserviceTokens> {
     const userData = await this.userRepository.signIn(user);
-
     const tokens = await this.tokenService.generateTokens(userData);
 
-    // this.cookieService.setCookie(res, 'qwe', 'qwe');
+    await this.cookieService.setBatchOfCookies(res, tokens);
+
     return { tokens };
   }
 }

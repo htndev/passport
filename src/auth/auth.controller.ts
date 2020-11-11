@@ -42,10 +42,9 @@ export class AuthController {
     return res.status(200).json(await this.authService.signIn(user, res));
   }
 
-  @UseGuards(JwtGuard)
   @Get('/tokens')
-  async getTokens(): Promise<any> {
-    // return this.authService.getTokens();
+  async getMicroserviceTokens(): Promise<any> {
+    // return this.authService.getMicroserviceTokens();
   }
 
   @Post('/test')

@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { setupSwagger } from './common/dev/swagger';
 import * as compression from 'compression';
 import * as cors from 'cors';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,7 @@ async function bootstrap() {
     allowedHeaders: config.allowedHeaders
   }));
   app.use(compression());
+  app.use(cookieParser());
 
   if(config.enableSwagger) {
     setupSwagger(app);

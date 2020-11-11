@@ -10,14 +10,14 @@ import { MicroserviceToken } from '../../types';
 export class TokenService {
   constructor(private readonly jwtService: JwtService, private readonly securityConfig: SecurityConfig) {}
 
-  async generateTokens(user: UserJwtPayload): Promise<MicroserviceToken> {
+  async generateTokens(user: UserJwtPayload): Promise<Required<MicroserviceToken>> {
     return MICROSERVICES.reduce(
       async (acc: any, microservice: Microservice) => ({
         ...(await acc),
         ...(await this.generateToken(microservice, user))
       }),
       Promise.resolve({} as any)
-    );
+    ) as Required<MicroserviceToken>;
   }
 
   private async generateToken(microserivce: Microservice, user: UserJwtPayload): Promise<MicroserviceToken> {
@@ -28,8 +28,14 @@ export class TokenService {
 
     return {
       [microserivce]: await this.jwtService.signAsync(payload, {
-        secret: this.securityConfig.getToken(microserivce)
+        secret: this.securityConfig.getMicroserviceToken(microserivce)
       })
     };
+  }
+
+  async parseToken<T extends Record<string, any> = any>(token: string, secret: string): Promise<T> {
+    return this.jwtService.verifyAsync<T>(token, {
+      secret
+    });
   }
 }

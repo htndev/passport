@@ -41,7 +41,7 @@ export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
     return this.config.DEFAULT_PASSPORT_STRATEGY;
   }
 
-  getToken(service: Microservice): string {
+  getMicroserviceToken(service: Microservice): string {
     switch(service) {
       case Microservice.PASSPORT: {
         return this.jwtPassportTokenSecret;
