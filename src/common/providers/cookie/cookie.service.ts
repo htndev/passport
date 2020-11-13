@@ -21,14 +21,13 @@ export class CookieService {
   }
 
   async setBatchOfCookies(res: Response, tokens: Required<MicroserviceToken>): Promise<void> {
-    let tokensVerification: any = Object.entries(tokens).map(async ([microservice, token]: MicroServiceTokenTuple) => {
+    const tokensVerification: any = await Promise.all(Object.entries(tokens).map(async ([microservice, token]: MicroServiceTokenTuple) => {
       const secret = this.securityConfig.getMicroserviceToken(microservice);
       const data = await this.tokenService.parseToken(token, secret);
       console.log(token, tokens[token]);
       return data;
-    });
+    }));
 
-    tokensVerification = await Promise.all(tokensVerification);
 
     console.log(tokensVerification);
   }
