@@ -14,6 +14,7 @@ import { TokenService } from './../common/providers/token/token.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import {DateService} from '../common/providers/date/date.service';
 
 @Module({
   imports: [
@@ -38,7 +39,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     ConfigManagerModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, TokenService, CookieService],
+  providers: [AuthService, JwtStrategy, TokenService, CookieService, DateService],
   exports: [JwtStrategy, PassportModule]
 })
 export class AuthModule {}

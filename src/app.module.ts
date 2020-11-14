@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { AppConfig } from './common/providers/config/app.config';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { DatabaseConfig } from './common/providers/config/database.config';
+import { TokensController } from './tokens/tokens.controller';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
@@ -40,9 +42,10 @@ import { DatabaseConfig } from './common/providers/config/database.config';
           entities: [`${__dirname}/entities/*.entity.{ts,js}`]
         } as TypeOrmModuleOptions)
     }),
-    AuthModule
+    AuthModule,
+    TokensModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, TokensController],
   providers: [AppService, AppConfig]
 })
 export class AppModule {}

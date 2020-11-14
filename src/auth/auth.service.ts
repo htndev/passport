@@ -57,7 +57,7 @@ export class AuthService {
     const userData = await this.userRepository.signIn(user);
     const tokens = await this.tokenService.generateTokens(userData);
 
-    await this.cookieService.setBatchOfCookies(res, tokens);
+    await this.cookieService.setBatchOfCookies(res, tokens, 'token.');
 
     return { tokens };
   }

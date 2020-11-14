@@ -3,36 +3,43 @@ import { Microservice } from './../../constants';
 import { MicroserviceToken } from '../../types';
 import { SecurityConfig } from '../config/security.config';
 import { Request, Response } from 'express';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { DateService } from '../date/date.service';
 
 type MicroServiceTokenTuple = [Microservice, string];
 
 @Injectable()
 export class CookieService {
-  constructor(private readonly securityConfig: SecurityConfig, private readonly tokenService: TokenService) {}
+  constructor(
+    private readonly securityConfig: SecurityConfig,
+    private readonly tokenService: TokenService,
+    private readonly dateService: DateService
+  ) {}
 
-  setCookie(response: Response, key: string, value: string | number): void {
-    console.log({ key, value });
-    // response.cookie(key, value, {
-    //   sameSite: 'none',
-    //   secure: false,
-    //   expires: 3600
-    // });
+  setCookie(response: Response, key: string, value: string | number, expires = new Date()): void {
+    console.log({ key, value, expires });
+    response.cookie(key, value, {
+      sameSite: 'none',
+      secure: false,
+      expires
+    });
   }
 
-  async setBatchOfCookies(res: Response, tokens: Required<MicroserviceToken>): Promise<void> {
-    const tokensVerification: any = await Promise.all(Object.entries(tokens).map(async ([microservice, token]: MicroServiceTokenTuple) => {
-      const secret = this.securityConfig.getMicroserviceToken(microservice);
-      const data = await this.tokenService.parseToken(token, secret);
-      console.log(token, tokens[token]);
-      return data;
-    }));
-
-
-    console.log(tokensVerification);
+  async setBatchOfCookies(res: Response, tokens: Required<MicroserviceToken>, prefix = ''): Promise<void> {
+    await Promise.all(
+      Object.entries(tokens).map(async ([microservice, token]: MicroServiceTokenTuple) => {
+        const secret = this.securityConfig.getMicroserviceToken(microservice);
+        const { exp, scope } = await this.tokenService.parseToken(token, secret);
+        const key = `${prefix}${scope}`;
+        this.setCookie(res, key, token, this.dateService.timestampToDate(exp));
+      })
+    );
   }
 
-  getCookie(request: Request, key: string): void {
+  getCookie(request: Request, key: string): string | null {
     console.log(request.cookies);
+    const cookie = request.cookies[key];
+
+    return cookie ?? null;
   }
 }

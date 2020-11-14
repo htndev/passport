@@ -1,3 +1,4 @@
+import { JwtPayload } from './../../../auth/interface/jwt-payload.interface';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -33,8 +34,8 @@ export class TokenService {
     };
   }
 
-  async parseToken<T extends Record<string, any> = any>(token: string, secret: string): Promise<T> {
-    return this.jwtService.verifyAsync<T>(token, {
+  async parseToken(token: string, secret: string): Promise<JwtPayload> {
+    return this.jwtService.verifyAsync<JwtPayload>(token, {
       secret
     });
   }
