@@ -48,9 +48,8 @@ export class AppConfig extends BaseConfig<AppConfigProps> {
   }
 
   get url(): string {
-    const protocol = this.isLocalhost ? 'http' : 'https';
     const port = this.isLocalhost ? `:${this.port}` : '';
 
-    return `${protocol}://${this.appHostname}${port}`;
+    return `https://${this.appHostname}${port}`;
   }
 }

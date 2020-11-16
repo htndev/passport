@@ -1,9 +1,9 @@
-import { Body, Controller, Post, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
-import { ErrorMessage } from './../common/constants';
-import { JwtGuard } from './../common/guards/auth/jwt.guard';
+import { ErrorMessage } from '../common/constants';
+import { HasRefreshTokenGuard } from '../common/guards/token/has-refresh-token.guard';
 import { AuthService } from './auth.service';
 import { NewUserDto, UserDto } from './dto/user.dto';
 
@@ -25,8 +25,11 @@ export class AuthController {
     status: 200,
     description: 'User registered successfully'
   })
-  async registration(@Body(ValidationPipe) user: NewUserDto): Promise<any> {
-    return this.authService.register(user);
+  async registration(
+    @Body(ValidationPipe) user: NewUserDto,
+    @Res() response: Response
+  ): Promise<any> {
+    return response.send(await this.authService.register(user, response));
   }
 
   @Post('/signin')
@@ -38,13 +41,21 @@ export class AuthController {
     status: 200,
     description: 'User authorized'
   })
-  async signIn(@Body(ValidationPipe) user: UserDto, @Res() res: Response): Promise<any> {
-    return res.status(200).json(await this.authService.signIn(user, res));
+  async signIn(@Body(ValidationPipe) user: UserDto, @Res() response: Response): Promise<any> {
+    return response.send(await this.authService.signIn(user, response));
   }
 
-  @Post('/test')
-  @UseGuards(JwtGuard)
-  test(@Req() req: Request): void {
-    // console.log(req);
+  @Post('/logout')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User log outed'
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'User is not authorized'
+  })
+  @UseGuards(HasRefreshTokenGuard)
+  async logout(@Res() response: Response): Promise<any> {
+    return response.send(await this.authService.logout(response));
   }
 }

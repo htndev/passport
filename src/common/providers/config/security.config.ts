@@ -3,6 +3,7 @@ import * as Joi from 'joi';
 import { BaseConfig } from './base.config';
 
 interface SecurityConfigProps {
+  COOKIE_SECRET: string;
   JWT_PASSPORT_TOKEN_SECRET: string;
   JWT_REFRESH_TOKEN_SECRET: string;
   JWT_MEDIA_TOKEN_SECRET: string;
@@ -16,6 +17,7 @@ interface SecurityConfigProps {
 export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
   getSchema(): Joi.ObjectSchema<SecurityConfigProps> {
     return Joi.object({
+      COOKIE_SECRET: Joi.string().required(),
       JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
       JWT_PASSPORT_TOKEN_SECRET: Joi.string().required(),
       JWT_MEDIA_TOKEN_SECRET: Joi.string().required(),
@@ -25,6 +27,10 @@ export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
       DEFAULT_PASSPORT_STRATEGY: Joi.string().default('jwt'),
       TOKEN_PREFIX: Joi.string().default('token.')
     });
+  }
+
+  get cookieSecret(): string {
+    return this.config.COOKIE_SECRET;
   }
 
   get jwtPassportTokenSecret(): string {

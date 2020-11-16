@@ -16,14 +16,17 @@ export class CookieService {
     private readonly dateService: DateService
   ) {}
 
-  setCookie(response: Response, key: string, value: string | number, expires = new Date(), options: CookieOptions = {}): void {
-    console.log({ key, value, expires });
+  private readonly cookieOptions: CookieOptions = {
+    sameSite: 'none',
+    secure: true,
+    httpOnly: true,
+    signed: true
+  };
+
+  setCookie(response: Response, key: string, value: string | number, expires = new Date()): void {
     response.cookie(key, value, {
-      sameSite: 'none',
-      secure: true,
-      httpOnly: true,
-      expires,
-      ...options
+      ...this.cookieOptions,
+      expires
     });
   }
 
@@ -39,9 +42,16 @@ export class CookieService {
   }
 
   getCookie(request: Request, key: string): string | null {
-    console.log(request.cookies);
-    const cookie = request.cookies[key];
+    const cookie = request.signedCookies[key];
 
     return cookie ?? null;
+  }
+
+  deleteCookie(response: Response, key: string): void {
+    response.cookie(key, '', {
+      ...this.cookieOptions,
+      expires: new Date(),
+      maxAge: -1
+    });
   }
 }

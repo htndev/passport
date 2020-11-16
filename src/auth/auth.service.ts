@@ -1,19 +1,17 @@
+import { MICROSERVICES, REFRESH_COOKIE } from './../common/constants';
 import { SecurityConfig } from '../common/providers/config/security.config';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 
 import { LocationIdentifierService } from '../common/providers/location-identifier/location-identifier.service';
 import { TokenService } from '../common/providers/token/token.service';
-import { MicroserviceToken } from '../common/types';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { CookieService } from '../common/providers/cookie/cookie.service';
 import { DateService } from '../common/providers/date/date.service';
 import { NewUserDto, UserDto } from './dto/user.dto';
 import { UserJwtPayload } from './interface/jwt-payload.interface';
-
-export type MicroserviceTokens = { tokens: Required<MicroserviceToken> };
 
 @Injectable()
 export class AuthService {
@@ -29,7 +27,7 @@ export class AuthService {
     private readonly securityConfig: SecurityConfig
   ) {}
 
-  async register({ ip, email, password, username }: NewUserDto): Promise<MicroserviceTokens> {
+  async register({ ip, email, password, username }: NewUserDto, response: Response): Promise<{ status: HttpStatus }> {
     const userWithEmail = await this.userRepository.findUserByEmail(email);
 
     if (userWithEmail) {
@@ -55,27 +53,43 @@ export class AuthService {
 
     const tokens = await this.tokenService.generateTokens({ email, username });
 
-    return { tokens };
+    await this.cookieService.setBatchOfCookies(response, tokens, this.securityConfig.tokenPrefix);
+
+    return { status: HttpStatus.CREATED };
   }
 
-  async signIn(user: UserDto, res: Response): Promise<MicroserviceTokens> {
+  async signIn(user: UserDto, response: Response): Promise<{ status: HttpStatus }> {
     const userData = await this.userRepository.signIn(user);
     const tokens = await this.tokenService.generateTokens(userData);
 
-    await this.cookieService.setBatchOfCookies(res, tokens, this.securityConfig.tokenPrefix);
+    await this.cookieService.setBatchOfCookies(response, tokens, this.securityConfig.tokenPrefix);
 
-    await this.setRefreshToken(res, userData);
+    await this.setRefreshToken(response, userData);
 
-    return { tokens };
+    return { status: HttpStatus.OK };
   }
 
-  async setRefreshToken(res: Response, user: UserJwtPayload): Promise<void> {
+  async logout(response: Response): Promise<{ status: HttpStatus }> {
+    let tokens = MICROSERVICES.map((microservice: string) => `${this.securityConfig.tokenPrefix}${microservice}`);
+    tokens = [...tokens, `${this.securityConfig.tokenPrefix}${REFRESH_COOKIE}`];
+
+    tokens.forEach((token: string) => {
+      this.cookieService.deleteCookie(response, token);
+    });
+
+    return { status: HttpStatus.OK };
+  }
+
+  async setRefreshToken(response: Response, user: UserJwtPayload): Promise<void> {
     const refreshToken = await this.tokenService.generateRefreshToken(user);
 
     const { exp } = await this.tokenService.parseToken(refreshToken, this.securityConfig.jwtRefreshTokenSecret);
 
-    this.cookieService.setCookie(res, 'token.refresh', refreshToken, this.dateService.timestampToDate(exp), {
-      httpOnly: true
-    });
+    this.cookieService.setCookie(
+      response,
+      `${this.securityConfig.tokenPrefix}${REFRESH_COOKIE}`,
+      refreshToken,
+      this.dateService.timestampToDate(exp)
+    );
   }
 }

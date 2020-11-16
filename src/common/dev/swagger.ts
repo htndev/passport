@@ -4,7 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export async function setupSwagger(app: INestApplication): Promise<void> {
   const packageConfig = await import('../../../package.json');
-  const config = app.get(AppConfig);
 
   const options = new DocumentBuilder()
     .setTitle(packageConfig.name)
@@ -17,5 +16,5 @@ export async function setupSwagger(app: INestApplication): Promise<void> {
 
   SwaggerModule.setup('docs', app, document);
 
-  Logger.verbose(`Swagger documentation available on ${config.url}/docs`);
+  Logger.verbose(`Swagger documentation available on route /docs`);
 }

@@ -14,3 +14,5 @@ export enum NodeEnv {
   PRODUCTION = 'production',
   DEVELOPMENT = 'development'
 };
+
+export const REFRESH_COOKIE = 'refresh';

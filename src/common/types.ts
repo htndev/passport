@@ -14,3 +14,5 @@ export const DatabaseErrorMessages = {
 export type PromisePick<T, K extends keyof T> = Promise<Pick<T, K>>;
 
 export type MicroserviceToken = { [k in Microservice]?: string };
+
+export type MicroserviceTokens = { tokens: Required<MicroserviceToken> };

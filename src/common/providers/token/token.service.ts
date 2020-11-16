@@ -23,7 +23,7 @@ export class TokenService {
     return tokens;
   }
 
-  private async generateToken(microserivce: Microservice, user: UserJwtPayload): Promise<MicroserviceToken> {
+  async generateToken(microserivce: Microservice, user: UserJwtPayload): Promise<MicroserviceToken> {
     const payload = {
       ...user,
       scope: microserivce
@@ -46,6 +46,13 @@ export class TokenService {
     return this.jwtService.signAsync(user, {
       secret: this.securityConfig.jwtRefreshTokenSecret,
       expiresIn: this.securityConfig.jwtRefreshTokenExpiresIn
-    })
+    });
+  }
+
+  getMicroserviceName(key: string): string {
+    const regexp = new RegExp(`(${MICROSERVICES.join('|')})`, 'g');
+    const [microserivce] = key.match(regexp);
+
+    return microserivce;
   }
 }

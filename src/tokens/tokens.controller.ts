@@ -1,7 +1,7 @@
 import { HasRefreshTokenGuard } from './../common/guards/token/has-refresh-token.guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { TokensService } from './tokens.service';
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('tokens')
@@ -13,7 +13,7 @@ export class TokensController {
 
   @UseGuards(HasRefreshTokenGuard)
   @Get('/')
-  async getTokens(@Req() request: Request): Promise<any> {
-    return this.tokensService.getTokens(request);
+  async getTokens(@Req() request: Request, @Res() response: Response): Promise<any> {
+    return response.send(await this.tokensService.getTokens(request, response));
   }
 }
