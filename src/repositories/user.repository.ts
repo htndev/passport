@@ -67,13 +67,13 @@ export class UserRepository extends Repository<User> {
     const user = await this.getUserCredentials({ email });
 
     if (!user) {
-      throw new ConflictException(ErrorMessage.WRONG_EMAIL_OR_PASSWORD);
+      throw new ConflictException(ErrorMessage.WrongEmailOrPassword);
     }
 
     const isPasswordMatched = await user.comparePasswords(password);
 
     if (!isPasswordMatched) {
-      throw new ConflictException(ErrorMessage.WRONG_EMAIL_OR_PASSWORD);
+      throw new ConflictException(ErrorMessage.WrongEmailOrPassword);
     }
 
     return {

@@ -12,13 +12,15 @@ export class TokenService {
   constructor(private readonly jwtService: JwtService, private readonly securityConfig: SecurityConfig) {}
 
   async generateTokens(user: UserJwtPayload): Promise<Required<MicroserviceToken>> {
-    return MICROSERVICES.reduce(
+    const tokens = MICROSERVICES.reduce(
       async (acc: any, microservice: Microservice) => ({
         ...(await acc),
         ...(await this.generateToken(microservice, user))
       }),
-      Promise.resolve({} as any)
-    ) as Required<MicroserviceToken>;
+      Promise.resolve({} as MicroserviceToken)
+    );
+
+    return tokens;
   }
 
   private async generateToken(microserivce: Microservice, user: UserJwtPayload): Promise<MicroserviceToken> {
@@ -38,5 +40,12 @@ export class TokenService {
     return this.jwtService.verifyAsync<JwtPayload>(token, {
       secret
     });
+  }
+
+  async generateRefreshToken(user: UserJwtPayload): Promise<any> {
+    return this.jwtService.signAsync(user, {
+      secret: this.securityConfig.jwtRefreshTokenSecret,
+      expiresIn: this.securityConfig.jwtRefreshTokenExpiresIn
+    })
   }
 }

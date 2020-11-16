@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards, ValidationPipe } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
@@ -32,7 +32,7 @@ export class AuthController {
   @Post('/signin')
   @ApiResponse({
     status: 409,
-    description: ErrorMessage.WRONG_EMAIL_OR_PASSWORD
+    description: ErrorMessage.WrongEmailOrPassword
   })
   @ApiResponse({
     status: 200,
@@ -42,14 +42,9 @@ export class AuthController {
     return res.status(200).json(await this.authService.signIn(user, res));
   }
 
-  @Get('/tokens')
-  async getMicroserviceTokens(): Promise<any> {
-    // return this.authService.getMicroserviceTokens();
-  }
-
   @Post('/test')
   @UseGuards(JwtGuard)
   test(@Req() req: Request): void {
-    console.log(req);
+    // console.log(req);
   }
 }

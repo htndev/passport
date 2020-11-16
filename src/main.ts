@@ -11,11 +11,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(AppConfig);
 
+  app.use(cookieParser());
+  console.log(config.allowedDomains);
   app.use(cors({
-    allowedHeaders: config.allowedHeaders
+    origin: config.allowedDomains,
+    credentials: true
   }));
   app.use(compression());
-  app.use(cookieParser());
 
   if(config.enableSwagger) {
     setupSwagger(app);

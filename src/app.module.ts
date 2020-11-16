@@ -1,18 +1,17 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { AppConfig } from './common/providers/config/app.config';
+import { CommonModule } from './common/common.module';
+import { RequestLoggerMiddleware } from './common/middlewares/request-logger.middleware';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { DatabaseConfig } from './common/providers/config/database.config';
-import { TokensController } from './tokens/tokens.controller';
 import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
+    CommonModule,
     ConfigModule.forRoot({
       envFilePath: '.dev.env',
       ignoreEnvFile: process.env.NODE_ENV === 'production'
@@ -20,7 +19,7 @@ import { TokensModule } from './tokens/tokens.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigManagerModule],
       inject: [DatabaseConfig],
-      useFactory: async ({
+      useFactory: ({
         type,
         host,
         username,
@@ -44,8 +43,10 @@ import { TokensModule } from './tokens/tokens.module';
     }),
     AuthModule,
     TokensModule
-  ],
-  controllers: [AppController, TokensController],
-  providers: [AppService, AppConfig]
+  ]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+  }
+}

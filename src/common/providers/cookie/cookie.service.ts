@@ -1,9 +1,9 @@
-import { TokenService } from './../token/token.service';
+import { TokenService } from '../token/token.service';
 import { Microservice } from './../../constants';
 import { MicroserviceToken } from '../../types';
 import { SecurityConfig } from '../config/security.config';
-import { Request, Response } from 'express';
-import { Inject, Injectable } from '@nestjs/common';
+import { CookieOptions, Request, Response } from 'express';
+import { Injectable } from '@nestjs/common';
 import { DateService } from '../date/date.service';
 
 type MicroServiceTokenTuple = [Microservice, string];
@@ -16,12 +16,14 @@ export class CookieService {
     private readonly dateService: DateService
   ) {}
 
-  setCookie(response: Response, key: string, value: string | number, expires = new Date()): void {
+  setCookie(response: Response, key: string, value: string | number, expires = new Date(), options: CookieOptions = {}): void {
     console.log({ key, value, expires });
     response.cookie(key, value, {
       sameSite: 'none',
-      secure: false,
-      expires
+      secure: true,
+      httpOnly: true,
+      expires,
+      ...options
     });
   }
 

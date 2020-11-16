@@ -1,5 +1,5 @@
 export enum ErrorMessage {
-  WRONG_EMAIL_OR_PASSWORD = 'Wrong email or password'
+  WrongEmailOrPassword = 'Wrong email or password'
 };
 
 export enum Microservice {
