@@ -38,7 +38,7 @@ export class User extends ExtendedBaseEntity {
   }
 
   @ManyToOne(
-    type => Location,
+    () => Location,
     location => location.users,
     { eager: false }
   )

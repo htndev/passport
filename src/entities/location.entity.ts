@@ -29,7 +29,7 @@ export class Location extends ExtendedBaseEntity {
   city: string;
 
   @OneToMany(
-    type => User,
+    () => User,
     user => user.countryCode,
     { eager: true }
   )

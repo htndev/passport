@@ -1,4 +1,3 @@
-import { AppConfig } from './../providers/config/app.config';
 import { INestApplication, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
