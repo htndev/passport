@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ExtendedBaseEntity } from './base.entity';
 
-@Entity({name: 'user_email_confirmation'})
+@Entity({ name: 'user_email_confirmation' })
 export class UserEmailConfirmation extends ExtendedBaseEntity {
   @PrimaryGeneratedColumn()
   id: number;

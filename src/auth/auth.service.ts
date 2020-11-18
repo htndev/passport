@@ -1,15 +1,15 @@
-import { MICROSERVICES, REFRESH_COOKIE } from './../common/constants';
-import { SecurityConfig } from '../common/providers/config/security.config';
 import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 
+import { SecurityConfig } from '../common/providers/config/security.config';
+import { CookieService } from '../common/providers/cookie/cookie.service';
+import { DateService } from '../common/providers/date/date.service';
 import { LocationIdentifierService } from '../common/providers/location-identifier/location-identifier.service';
 import { TokenService } from '../common/providers/token/token.service';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { CookieService } from '../common/providers/cookie/cookie.service';
-import { DateService } from '../common/providers/date/date.service';
+import { MICROSERVICES } from './../common/constants';
 import { NewUserDto, UserDto } from './dto/user.dto';
 import { UserJwtPayload } from './interface/jwt-payload.interface';
 
@@ -71,7 +71,7 @@ export class AuthService {
 
   async logout(response: Response): Promise<{ status: HttpStatus }> {
     let tokens = MICROSERVICES.map((microservice: string) => `${this.securityConfig.tokenPrefix}${microservice}`);
-    tokens = [...tokens, `${this.securityConfig.tokenPrefix}${REFRESH_COOKIE}`];
+    tokens = [...tokens, this.securityConfig.refreshTokenName];
 
     tokens.forEach((token: string) => {
       this.cookieService.deleteCookie(response, token);
@@ -87,7 +87,7 @@ export class AuthService {
 
     this.cookieService.setCookie(
       response,
-      `${this.securityConfig.tokenPrefix}${REFRESH_COOKIE}`,
+      this.securityConfig.refreshTokenName,
       refreshToken,
       this.dateService.timestampToDate(exp)
     );

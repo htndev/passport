@@ -1,5 +1,6 @@
-import { Microservice } from './../../constants';
 import * as Joi from 'joi';
+
+import { Microservice, REFRESH_TOKEN_COOKIE } from './../../constants';
 import { BaseConfig } from './base.config';
 
 interface SecurityConfigProps {
@@ -65,8 +66,12 @@ export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
     return this.config.TOKEN_PREFIX;
   }
 
+  get refreshTokenName(): string {
+    return `${this.tokenPrefix}${REFRESH_TOKEN_COOKIE}`;
+  }
+
   getMicroserviceToken(service: Microservice): string {
-    switch(service) {
+    switch (service) {
       case Microservice.PASSPORT: {
         return this.jwtPassportTokenSecret;
       }

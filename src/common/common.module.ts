@@ -1,10 +1,11 @@
-import { DateService } from './providers/date/date.service';
-import { Module } from "@nestjs/common";
-import { JwtModule } from "@nestjs/jwt";
-import { PassportModule } from "@nestjs/passport";
+import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+
 import { ConfigModule as ConfigManagerModule } from '../common/providers/config/config.module';
-import { AppConfig } from "./providers/config/app.config";
-import { SecurityConfig } from "./providers/config/security.config";
+import { AppConfig } from './providers/config/app.config';
+import { SecurityConfig } from './providers/config/security.config';
+import { DateService } from './providers/date/date.service';
 
 @Module({
   imports: [

@@ -25,9 +25,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userRepository.findUserByEmailAndUsername({ username, email });
 
     const scopes = scope.split(',');
-    console.log({ username, email, scopes });
 
-    if(!scopes.includes(Microservice.PASSPORT)) {
+    if (!scopes.includes(Microservice.PASSPORT)) {
       throw new UnauthorizedException();
     }
 

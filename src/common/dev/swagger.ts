@@ -1,6 +1,8 @@
 import { INestApplication, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+export const errorBuilder = (separator: string, ...errors: string[]): string => errors.join(separator);
+
 export async function setupSwagger(app: INestApplication): Promise<void> {
   const packageConfig = await import('../../../package.json');
 

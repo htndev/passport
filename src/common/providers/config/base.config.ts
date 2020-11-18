@@ -23,13 +23,7 @@ export abstract class BaseConfig<T = any> {
     const schema = this.getSchema().append({
       NODE_ENV: Joi.string().default(NodeEnv.DEVELOPMENT),
       LOG_LEVEL: Joi.string()
-        .valid(
-          LogLevel.DEBUG,
-          LogLevel.ERROR,
-          LogLevel.LOG,
-          LogLevel.VERBOSE,
-          LogLevel.WARN
-        )
+        .valid(LogLevel.DEBUG, LogLevel.ERROR, LogLevel.LOG, LogLevel.VERBOSE, LogLevel.WARN)
         .default(LogLevel.ERROR)
     });
 
@@ -42,7 +36,7 @@ export abstract class BaseConfig<T = any> {
     const { error, value } = schema.validate(config, {
       abortEarly: false,
       allowUnknown: true,
-      stripUnknown: true,
+      stripUnknown: true
     });
 
     if (error) {

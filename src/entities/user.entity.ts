@@ -37,10 +37,6 @@ export class User extends ExtendedBaseEntity {
     return compare(password, this.password);
   }
 
-  @ManyToOne(
-    () => Location,
-    location => location.users,
-    { eager: false }
-  )
+  @ManyToOne(() => Location, (location) => location.users, { eager: false })
   location: Location;
 }

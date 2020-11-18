@@ -7,9 +7,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('tokens')
 @Controller('tokens')
 export class TokensController {
-  constructor(
-    private readonly tokensService: TokensService
-  ) {}
+  constructor(private readonly tokensService: TokensService) {}
 
   @UseGuards(HasRefreshTokenGuard)
   @Get('/')

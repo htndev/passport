@@ -1,9 +1,11 @@
 import { Body, Controller, HttpStatus, Post, Res, UseGuards, ValidationPipe } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { NotAuthorizedUser } from 'src/common/guards/auth/not-authorized-user.guard';
 
 import { ErrorMessage } from '../common/constants';
 import { HasRefreshTokenGuard } from '../common/guards/token/has-refresh-token.guard';
+import { errorBuilder } from './../common/dev/swagger';
 import { AuthService } from './auth.service';
 import { NewUserDto, UserDto } from './dto/user.dto';
 
@@ -12,39 +14,40 @@ import { NewUserDto, UserDto } from './dto/user.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(NotAuthorizedUser)
   @Post('/signup')
+  @ApiBody({})
   @ApiResponse({
-    status: 403,
-    description: 'Passed data is incorrect'
+    status: HttpStatus.BAD_REQUEST,
+    description: ErrorMessage.IncorrectData
   })
   @ApiResponse({
-    status: 409,
-    description: 'User with email or username already exists'
+    status: HttpStatus.CONFLICT,
+    description: errorBuilder('OR', 'User with email or username already exists', 'You are authorized user')
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.CREATED,
     description: 'User registered successfully'
   })
-  async registration(
-    @Body(ValidationPipe) user: NewUserDto,
-    @Res() response: Response
-  ): Promise<any> {
-    return response.send(await this.authService.register(user, response));
+  async registration(@Body(ValidationPipe) user: NewUserDto, @Res() response: Response): Promise<any> {
+    return response.status(HttpStatus.CREATED).send(await this.authService.register(user, response));
   }
 
+  @UseGuards(NotAuthorizedUser)
   @Post('/signin')
   @ApiResponse({
-    status: 409,
-    description: ErrorMessage.WrongEmailOrPassword
+    status: HttpStatus.CONFLICT,
+    description: errorBuilder('OR', ErrorMessage.WrongEmailOrPassword, ErrorMessage.UserAuthorized)
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'User authorized'
   })
   async signIn(@Body(ValidationPipe) user: UserDto, @Res() response: Response): Promise<any> {
     return response.send(await this.authService.signIn(user, response));
   }
 
+  @UseGuards(HasRefreshTokenGuard)
   @Post('/logout')
   @ApiResponse({
     status: HttpStatus.OK,
@@ -54,7 +57,6 @@ export class AuthController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'User is not authorized'
   })
-  @UseGuards(HasRefreshTokenGuard)
   async logout(@Res() response: Response): Promise<any> {
     return response.send(await this.authService.logout(response));
   }

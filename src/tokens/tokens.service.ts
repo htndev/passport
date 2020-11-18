@@ -1,4 +1,3 @@
-import { REFRESH_COOKIE } from './../common/constants';
 import { Injectable } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { isEmpty } from 'lodash';
@@ -7,7 +6,7 @@ import { MICROSERVICES } from '../common/constants';
 import { SecurityConfig } from '../common/providers/config/security.config';
 import { TokenService } from '../common/providers/token/token.service';
 import { CookieService } from './../common/providers/cookie/cookie.service';
-import { MicroserviceTokens } from './../common/types';
+import { MicroserviceToken, MicroserviceTokens } from './../common/types';
 
 @Injectable()
 export class TokensService {
@@ -21,7 +20,7 @@ export class TokensService {
     const regexp = () => new RegExp(`${this.securityConfig.tokenPrefix}(${MICROSERVICES.join('|')})`, 'g');
 
     const tokens = Object.keys(request.signedCookies)
-      .filter(cookie => regexp().test(cookie))
+      .filter((cookie) => regexp().test(cookie))
       .reduce(
         (acc: any, cookie: string) => ({
           ...acc,
@@ -39,9 +38,8 @@ export class TokensService {
     return { tokens: newTokens };
   }
 
-  // async generateTokens({ cookies }: Request): Promise<MicroserviceToken> {
-  async generateTokens(request: Request, response: Response): Promise<any> {
-    const refreshToken = this.cookieService.getCookie(request, `${this.securityConfig.tokenPrefix}${REFRESH_COOKIE}`);
+  async generateTokens(request: Request, response: Response): Promise<Required<MicroserviceToken>> {
+    const refreshToken = this.cookieService.getCookie(request, this.securityConfig.refreshTokenName);
 
     const { username, email } = await this.tokenService.parseToken(
       refreshToken,
@@ -51,6 +49,6 @@ export class TokensService {
     const tokens = await this.tokenService.generateTokens({ username, email });
     await this.cookieService.setBatchOfCookies(response, tokens, this.securityConfig.tokenPrefix);
 
-    return tokens;
+    return tokens as Required<MicroserviceToken>;
   }
 }

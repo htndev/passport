@@ -1,10 +1,11 @@
+import { Injectable } from '@nestjs/common';
+import { CookieOptions, Request, Response } from 'express';
+
+import { MicroserviceToken, Nullable } from '../../types';
+import { SecurityConfig } from '../config/security.config';
+import { DateService } from '../date/date.service';
 import { TokenService } from '../token/token.service';
 import { Microservice } from './../../constants';
-import { MicroserviceToken } from '../../types';
-import { SecurityConfig } from '../config/security.config';
-import { CookieOptions, Request, Response } from 'express';
-import { Injectable } from '@nestjs/common';
-import { DateService } from '../date/date.service';
 
 type MicroServiceTokenTuple = [Microservice, string];
 
@@ -41,7 +42,7 @@ export class CookieService {
     );
   }
 
-  getCookie(request: Request, key: string): string | null {
+  getCookie(request: Request, key: string): Nullable<string> {
     const cookie = request.signedCookies[key];
 
     return cookie ?? null;
@@ -53,5 +54,9 @@ export class CookieService {
       expires: new Date(),
       maxAge: -1
     });
+  }
+
+  getRefreshToken(request: Request): Nullable<string> {
+    return this.getCookie(request, this.securityConfig.refreshTokenName);
   }
 }

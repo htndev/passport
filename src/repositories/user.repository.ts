@@ -27,16 +27,12 @@ export class UserRepository extends Repository<User> {
   }
 
   async findUserByEmail(email: string): PromisePick<User, 'email'> {
-    const query = this.createQueryBuilder('user')
-      .select(['user.email'])
-      .where('email = :email', { email });
+    const query = this.createQueryBuilder('user').select(['user.email']).where('email = :email', { email });
     return query.getOne();
   }
 
   async findUserByUsername(username: string): PromisePick<User, 'username'> {
-    const query = this.createQueryBuilder('user')
-      .select(['user.username'])
-      .where('username = :username', { username });
+    const query = this.createQueryBuilder('user').select(['user.username']).where('username = :username', { username });
     return query.getOne();
   }
 
@@ -87,9 +83,6 @@ export class UserRepository extends Repository<User> {
   }): PromisePick<User, 'username' | 'email' | 'password' | 'comparePasswords'> {
     const query = this.createQueryBuilder('user');
 
-    return query
-      .select(['user.username', 'user.email', 'user.password'])
-      .where('email = :email', { email })
-      .getOne();
+    return query.select(['user.username', 'user.email', 'user.password']).where('email = :email', { email }).getOne();
   }
 }

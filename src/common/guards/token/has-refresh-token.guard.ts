@@ -1,19 +1,17 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 
-import { SecurityConfig } from '../../../common/providers/config/security.config';
 import { CookieService } from '../../../common/providers/cookie/cookie.service';
-import { REFRESH_COOKIE } from '../../constants';
 
 @Injectable()
 export class HasRefreshTokenGuard implements CanActivate {
-  constructor(private readonly securityConfig: SecurityConfig, private readonly cookieService: CookieService) {}
+  constructor(@Inject('CookieService') private readonly cookieService: CookieService) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request: Request = context.switchToHttp().getRequest();
 
-    const refreshToken = this.cookieService.getCookie(request, `${this.securityConfig.tokenPrefix}${REFRESH_COOKIE}`);
+    const refreshToken = this.cookieService.getRefreshToken(request);
 
     if (!refreshToken) {
       throw new UnauthorizedException();

@@ -1,7 +1,7 @@
 import { SecurityConfig } from './security.config';
 import { AppConfig } from './app.config';
 import { DatabaseConfig } from './database.config';
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common';
 
 @Module({
   providers: [DatabaseConfig, AppConfig, SecurityConfig],

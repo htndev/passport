@@ -7,7 +7,7 @@ import { TokenService } from '../common/providers/token/token.service';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { CommonModule } from './../common/common.module';
-import { CookieService } from './../common/providers/cookie/cookie.service';
+import { CookieModule } from './../common/providers/cookie/cookie.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
@@ -17,9 +17,10 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     CommonModule,
     TypeOrmModule.forFeature([UserRepository, LocationRepository]),
     LocationIdentifierModule,
-    ConfigManagerModule
+    ConfigManagerModule,
+    CookieModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, TokenService, CookieService]
+  providers: [AuthService, JwtStrategy, TokenService]
 })
 export class AuthModule {}

@@ -31,10 +31,7 @@ export class LocationIdentifierService {
   constructor(private readonly httpService: HttpService) {}
 
   async getInfo(ip: string): Promise<LocationInfo> {
-    const { data: ipInfo } = await this.httpService
-      .get<IpAPIResponse>(this.getUrl(ip))
-      .pipe(retry(5))
-      .toPromise();
+    const { data: ipInfo } = await this.httpService.get<IpAPIResponse>(this.getUrl(ip)).pipe(retry(5)).toPromise();
     if (ipInfo.status === LocationServiceResponseStatuses.FAIL) {
       throw new BadRequestException(`Cannot parse an IP address '${ip}'. Probably, it's over the range`);
     }
