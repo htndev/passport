@@ -1,17 +1,21 @@
 import { JwtPayload } from './../../../auth/interface/jwt-payload.interface';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { UserJwtPayload } from '../../../auth/interface/jwt-payload.interface';
 import { Microservice, MICROSERVICES } from '../../../common/constants';
 import { SecurityConfig } from '../../providers/config/security.config';
-import { MicroserviceToken } from '../../types';
+import { MicroserviceToken } from '../../utils/types';
 
 @Injectable()
 export class TokenService {
+  readonly #logger = new Logger('Token Service');
+
   constructor(private readonly jwtService: JwtService, private readonly securityConfig: SecurityConfig) {}
 
   async generateTokens(user: UserJwtPayload): Promise<Required<MicroserviceToken>> {
+    this.#logger.verbose(`Generating tokens for ${user.email}`);
+
     const tokens = MICROSERVICES.reduce(
       async (acc: any, microservice: Microservice) => ({
         ...(await acc),
@@ -47,12 +51,5 @@ export class TokenService {
       secret: this.securityConfig.jwtRefreshTokenSecret,
       expiresIn: this.securityConfig.jwtRefreshTokenExpiresIn
     });
-  }
-
-  getMicroserviceName(key: string): string {
-    const regexp = new RegExp(`(${MICROSERVICES.join('|')})`, 'g');
-    const [microserivce] = key.match(regexp);
-
-    return microserivce;
   }
 }

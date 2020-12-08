@@ -1,7 +1,8 @@
 import { compare } from 'bcrypt';
-import { Location } from './location.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
 import { ExtendedBaseEntity } from './base.entity';
+import { Location } from './location.entity';
 
 @Entity({ name: 'users' })
 export class User extends ExtendedBaseEntity {
@@ -28,15 +29,14 @@ export class User extends ExtendedBaseEntity {
   })
   password: string;
 
-  @Column({
-    type: 'int'
-  })
-  countryCode: number;
-
   async comparePasswords(password: string): Promise<boolean> {
     return compare(password, this.password);
   }
 
   @ManyToOne(() => Location, (location) => location.users, { eager: false })
+  @JoinColumn()
   location: Location;
+
+  @Column()
+  locationId: number;
 }

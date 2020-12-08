@@ -6,6 +6,7 @@ interface AppConfigProps {
   PORT: number;
   ALLOWED_HEADERS: string;
   ALLOWED_DOMAINS: string;
+  API_VERSION: string;
   ENABLE_SWAGGER: boolean;
   APP_HOSTNAME: string;
   URL: string;
@@ -19,7 +20,8 @@ export class AppConfig extends BaseConfig<AppConfigProps> {
       ALLOWED_HEADERS: Joi.string().default('*'),
       ALLOWED_DOMAINS: Joi.string().default('*'),
       ENABLE_SWAGGER: Joi.boolean().default(true),
-      APP_HOSTNAME: Joi.string().required()
+      APP_HOSTNAME: Joi.string().required(),
+      API_VERSION: Joi.string().required()
     });
   }
 
@@ -41,6 +43,10 @@ export class AppConfig extends BaseConfig<AppConfigProps> {
 
   get appHostname(): string {
     return this.config.APP_HOSTNAME;
+  }
+
+  get apiVersion(): string {
+    return this.config.API_VERSION;
   }
 
   get isLocalhost(): boolean {

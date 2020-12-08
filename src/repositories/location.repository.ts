@@ -1,5 +1,5 @@
 import { Location } from '../entities/location.entity';
-import { LocationInfo } from '../common/types';
+import { LocationInfo } from '../common/utils/types';
 import { EntityRepository, Repository } from 'typeorm';
 
 @EntityRepository(Location)
@@ -16,11 +16,11 @@ export class LocationRepository extends Repository<Location> {
     return await query.getOne();
   }
 
-  async getOrInsertLocation(location: LocationInfo): Promise<number> {
+  async getOrInsertLocation(location: LocationInfo): Promise<Location> {
     const foundLocation = await this.findLocation(location);
 
     if (foundLocation) {
-      return foundLocation.id;
+      return foundLocation;
     }
 
     const newLocation = new Location();
@@ -32,6 +32,6 @@ export class LocationRepository extends Repository<Location> {
 
     await newLocation.save();
 
-    return newLocation.id;
+    return newLocation;
   }
 }

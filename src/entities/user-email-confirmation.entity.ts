@@ -7,6 +7,7 @@ export class UserEmailConfirmation extends ExtendedBaseEntity {
   id: number;
 
   @Column({
+    type: 'varchar',
     unique: true
   })
   email: string;

@@ -28,6 +28,6 @@ export class Location extends ExtendedBaseEntity {
   })
   city: string;
 
-  @OneToMany(() => User, (user) => user.countryCode, { eager: true })
+  @OneToMany(() => User, (user) => user.location, { eager: true })
   users: User[];
 }

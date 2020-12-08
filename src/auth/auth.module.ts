@@ -8,7 +8,7 @@ import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { CommonModule } from './../common/common.module';
 import { CookieModule } from './../common/providers/cookie/cookie.module';
-import { AuthController } from './auth.controller';
+import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy/jwt.strategy';
 
@@ -20,7 +20,6 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     ConfigManagerModule,
     CookieModule
   ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, TokenService]
+  providers: [AuthResolver, AuthService, JwtStrategy, TokenService]
 })
 export class AuthModule {}

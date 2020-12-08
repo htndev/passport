@@ -24,9 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate({ username, email, scope }: JwtPayload): Promise<Pick<User, 'email' | 'username'>> {
     const user = await this.userRepository.findUserByEmailAndUsername({ username, email });
 
-    const scopes = scope.split(',');
-
-    if (!scopes.includes(Microservice.PASSPORT)) {
+    if (scope !== Microservice.PASSPORT) {
       throw new UnauthorizedException();
     }
 

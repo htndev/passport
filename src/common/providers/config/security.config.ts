@@ -12,7 +12,6 @@ interface SecurityConfigProps {
   JWT_ACCESS_TOKEN_EXPIRES_IN: number;
   JWT_REFRESH_TOKEN_EXPIRES_IN: number;
   DEFAULT_PASSPORT_STRATEGY: string;
-  TOKEN_PREFIX: string;
 }
 
 export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
@@ -25,8 +24,7 @@ export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
       JWT_STUDIO_TOKEN_SECRET: Joi.string().required(),
       JWT_ACCESS_TOKEN_EXPIRES_IN: Joi.number().required(),
       JWT_REFRESH_TOKEN_EXPIRES_IN: Joi.number().required(),
-      DEFAULT_PASSPORT_STRATEGY: Joi.string().default('jwt'),
-      TOKEN_PREFIX: Joi.string().default('token.')
+      DEFAULT_PASSPORT_STRATEGY: Joi.string().default('jwt')
     });
   }
 
@@ -60,14 +58,6 @@ export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
 
   get defaultPassportStrategy(): string {
     return this.config.DEFAULT_PASSPORT_STRATEGY;
-  }
-
-  get tokenPrefix(): string {
-    return this.config.TOKEN_PREFIX;
-  }
-
-  get refreshTokenName(): string {
-    return `${this.tokenPrefix}${REFRESH_TOKEN_COOKIE}`;
   }
 
   getMicroserviceToken(service: Microservice): string {

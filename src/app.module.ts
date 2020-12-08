@@ -1,5 +1,8 @@
+import { formatGqlError } from './common/utils/format-gql-error';
+import { AppConfig } from './common/providers/config/app.config';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
@@ -8,9 +11,11 @@ import { RequestLoggerMiddleware } from './common/middlewares/request-logger.mid
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { DatabaseConfig } from './common/providers/config/database.config';
 import { TokensModule } from './tokens/tokens.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
+    AuthModule,
     CommonModule,
     ConfigModule.forRoot({
       envFilePath: '.dev.env',
@@ -41,8 +46,23 @@ import { TokensModule } from './tokens/tokens.module';
           entities: [`${__dirname}/entities/*.entity.{ts,js}`]
         } as TypeOrmModuleOptions)
     }),
-    AuthModule,
-    TokensModule
+    GraphQLModule.forRootAsync({
+      imports: [ConfigManagerModule],
+      inject: [AppConfig],
+      useFactory: ({ isDevMode }: AppConfig) => ({
+        autoSchemaFile: true,
+        playground: isDevMode ? {
+          settings: {
+            'request.credentials': 'include'
+          }
+        } : false,
+        useGlobalPrefix: true,
+        context: ({ req, res }: any): any => ({ req, res }),
+        formatError: formatGqlError(isDevMode)
+      })
+    }),
+    TokensModule,
+    UserModule
   ]
 })
 export class AppModule implements NestModule {

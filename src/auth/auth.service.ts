@@ -7,10 +7,13 @@ import { CookieService } from '../common/providers/cookie/cookie.service';
 import { DateService } from '../common/providers/date/date.service';
 import { LocationIdentifierService } from '../common/providers/location-identifier/location-identifier.service';
 import { TokenService } from '../common/providers/token/token.service';
+import { CookieSetterFunction } from '../common/utils/types';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { MICROSERVICES } from './../common/constants';
-import { NewUserDto, UserDto } from './dto/user.dto';
+import { MICROSERVICES, REFRESH_TOKEN_COOKIE } from './../common/constants';
+import { StatusType } from './../common/types/status.type';
+import { NewUserInput } from './inputs/new-user.input';
+import { SignInUserInput } from './inputs/sign-in-user.input';
 import { UserJwtPayload } from './interface/jwt-payload.interface';
 
 @Injectable()
@@ -27,7 +30,10 @@ export class AuthService {
     private readonly securityConfig: SecurityConfig
   ) {}
 
-  async register({ ip, email, password, username }: NewUserDto, response: Response): Promise<{ status: HttpStatus }> {
+  async signUp(
+    { ip, email, password, username }: NewUserInput,
+    cookieSetter: CookieSetterFunction
+  ): Promise<StatusType> {
     const userWithEmail = await this.userRepository.findUserByEmail(email);
 
     if (userWithEmail) {
@@ -41,53 +47,52 @@ export class AuthService {
     }
 
     const ipInfo = await this.locationIdentifier.getInfo(ip);
-
-    const locationId = await this.locationRepository.getOrInsertLocation(ipInfo);
+    const location = await this.locationRepository.getOrInsertLocation(ipInfo);
 
     await this.userRepository.signUp({
       email,
       username,
-      countryCode: locationId,
+      location,
       password
     });
 
     const tokens = await this.tokenService.generateTokens({ email, username });
 
-    await this.cookieService.setBatchOfCookies(response, tokens, this.securityConfig.tokenPrefix);
+    await this.cookieService.setBatchOfCookies(cookieSetter, tokens);
 
-    return { status: HttpStatus.CREATED };
+    return { status: HttpStatus.CREATED, message: 'User successfully created' };
   }
 
-  async signIn(user: UserDto, response: Response): Promise<{ status: HttpStatus }> {
+  async signIn(user: SignInUserInput, cookieSetter: CookieSetterFunction): Promise<StatusType> {
     const userData = await this.userRepository.signIn(user);
     const tokens = await this.tokenService.generateTokens(userData);
 
-    await this.cookieService.setBatchOfCookies(response, tokens, this.securityConfig.tokenPrefix);
+    await this.cookieService.setBatchOfCookies(cookieSetter, tokens);
 
-    await this.setRefreshToken(response, userData);
+    await this.setRefreshToken(cookieSetter, userData);
 
     return { status: HttpStatus.OK };
   }
 
-  async logout(response: Response): Promise<{ status: HttpStatus }> {
-    let tokens = MICROSERVICES.map((microservice: string) => `${this.securityConfig.tokenPrefix}${microservice}`);
-    tokens = [...tokens, this.securityConfig.refreshTokenName];
+  async logout(cookieSetter: CookieSetterFunction): Promise<StatusType> {
+    let tokens = MICROSERVICES.map((microservice: string) => microservice);
+    tokens = [...tokens, REFRESH_TOKEN_COOKIE];
 
     tokens.forEach((token: string) => {
-      this.cookieService.deleteCookie(response, token);
+      this.cookieService.deleteCookie(cookieSetter, token);
     });
 
     return { status: HttpStatus.OK };
   }
 
-  async setRefreshToken(response: Response, user: UserJwtPayload): Promise<void> {
+  async setRefreshToken(cookieSetter: CookieSetterFunction, user: UserJwtPayload): Promise<void> {
     const refreshToken = await this.tokenService.generateRefreshToken(user);
 
     const { exp } = await this.tokenService.parseToken(refreshToken, this.securityConfig.jwtRefreshTokenSecret);
 
     this.cookieService.setCookie(
-      response,
-      this.securityConfig.refreshTokenName,
+      cookieSetter,
+      REFRESH_TOKEN_COOKIE,
       refreshToken,
       this.dateService.timestampToDate(exp)
     );

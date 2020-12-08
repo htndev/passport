@@ -1,6 +1,6 @@
 import { BadRequestException, HttpService, Injectable } from '@nestjs/common';
 import { retry } from 'rxjs/operators';
-import { LocationInfo } from '../../types';
+import { LocationInfo } from '../../utils/types';
 
 enum LocationServiceResponseStatuses {
   SUCCESS = 'success',
@@ -8,20 +8,20 @@ enum LocationServiceResponseStatuses {
 }
 
 interface IpAPIResponse {
-  readonly status: LocationServiceResponseStatuses;
-  readonly country: string;
-  readonly countryCode: string;
-  readonly region: string;
-  readonly regionName: string;
-  readonly city: string;
-  readonly zip: string;
-  readonly lat: number;
-  readonly lon: number;
-  readonly timezone: number;
-  readonly isp: string;
-  readonly org: string;
-  readonly as: string;
-  readonly query: string;
+  status: LocationServiceResponseStatuses;
+  country: string;
+  countryCode: string;
+  region: string;
+  regionName: string;
+  city: string;
+  zip: string;
+  lat: number;
+  lon: number;
+  timezone: number;
+  isp: string;
+  org: string;
+  as: string;
+  query: string;
 }
 
 @Injectable()
@@ -31,7 +31,10 @@ export class LocationIdentifierService {
   constructor(private readonly httpService: HttpService) {}
 
   async getInfo(ip: string): Promise<LocationInfo> {
-    const { data: ipInfo } = await this.httpService.get<IpAPIResponse>(this.getUrl(ip)).pipe(retry(5)).toPromise();
+    const { data: ipInfo } = await this.httpService
+      .get<Readonly<IpAPIResponse>>(this.getUrl(ip))
+      .pipe(retry(5))
+      .toPromise();
     if (ipInfo.status === LocationServiceResponseStatuses.FAIL) {
       throw new BadRequestException(`Cannot parse an IP address '${ip}'. Probably, it's over the range`);
     }

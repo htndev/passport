@@ -1,11 +1,12 @@
+import { CookieSetterFunction } from './../../utils/types';
 import { Injectable } from '@nestjs/common';
 import { CookieOptions, Request, Response } from 'express';
 
-import { MicroserviceToken, Nullable } from '../../types';
+import { MicroserviceToken, Nullable } from '../../utils/types';
 import { SecurityConfig } from '../config/security.config';
 import { DateService } from '../date/date.service';
 import { TokenService } from '../token/token.service';
-import { Microservice } from './../../constants';
+import { Microservice, REFRESH_TOKEN_COOKIE } from './../../constants';
 
 type MicroServiceTokenTuple = [Microservice, string];
 
@@ -24,39 +25,37 @@ export class CookieService {
     signed: true
   };
 
-  setCookie(response: Response, key: string, value: string | number, expires = new Date()): void {
-    response.cookie(key, value, {
+  setCookie(cookieSetter: CookieSetterFunction, key: string, value: string | number, expires = new Date()): void {
+    cookieSetter(key, value, {
       ...this.cookieOptions,
       expires
     });
   }
 
-  async setBatchOfCookies(res: Response, tokens: Required<MicroserviceToken>, prefix = ''): Promise<void> {
+  async setBatchOfCookies(cookieSetter: CookieSetterFunction, tokens: Required<MicroserviceToken>): Promise<void> {
     await Promise.all(
       Object.entries(tokens).map(async ([microservice, token]: MicroServiceTokenTuple) => {
         const secret = this.securityConfig.getMicroserviceToken(microservice);
         const { exp, scope } = await this.tokenService.parseToken(token, secret);
-        const key = `${prefix}${scope}`;
-        this.setCookie(res, key, token, this.dateService.timestampToDate(exp));
+
+        this.setCookie(cookieSetter, scope, token, this.dateService.timestampToDate(exp));
       })
     );
   }
 
-  getCookie(request: Request, key: string): Nullable<string> {
-    const cookie = request.signedCookies[key];
-
-    return cookie ?? null;
+  getCookie(cookies: Record<string, any>, key: string): Nullable<string> {
+    return cookies[key] ?? '';
   }
 
-  deleteCookie(response: Response, key: string): void {
-    response.cookie(key, '', {
+  deleteCookie(cookieSetter: CookieSetterFunction, key: string): void {
+    cookieSetter(key, '', {
       ...this.cookieOptions,
       expires: new Date(),
       maxAge: -1
     });
   }
 
-  getRefreshToken(request: Request): Nullable<string> {
-    return this.getCookie(request, this.securityConfig.refreshTokenName);
+  getRefreshToken(cookies: Record<string, any>): string {
+    return this.getCookie(cookies, REFRESH_TOKEN_COOKIE);
   }
 }

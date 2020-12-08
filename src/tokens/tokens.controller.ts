@@ -12,6 +12,6 @@ export class TokensController {
   @UseGuards(HasRefreshTokenGuard)
   @Get('/')
   async getTokens(@Req() request: Request, @Res() response: Response): Promise<any> {
-    return response.send(await this.tokensService.getTokens(request, response));
+    // return response.send(await this.tokensService.getTokens(request, response));
   }
 }
