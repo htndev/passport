@@ -30,4 +30,3 @@ export type Nullable<T> = T | null;
 export type AllowedUserFields = keyof Pick<UserEntity, 'email' | 'username' | 'id' | 'locationId' | 'password'>;
 
 export type CookieSetterFunction = (name: string, value: string | number, options: CookieOptions) => void;
-

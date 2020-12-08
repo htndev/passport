@@ -1,4 +1,3 @@
-import { JwtPayload } from './../../../auth/interface/jwt-payload.interface';
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -6,6 +5,7 @@ import { UserJwtPayload } from '../../../auth/interface/jwt-payload.interface';
 import { Microservice, MICROSERVICES } from '../../../common/constants';
 import { SecurityConfig } from '../../providers/config/security.config';
 import { MicroserviceToken } from '../../utils/types';
+import { JwtPayload } from './../../../auth/interface/jwt-payload.interface';
 
 @Injectable()
 export class TokenService {

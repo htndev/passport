@@ -1,5 +1,3 @@
-import { formatGqlError } from './common/utils/format-gql-error';
-import { AppConfig } from './common/providers/config/app.config';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -8,8 +6,10 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { RequestLoggerMiddleware } from './common/middlewares/request-logger.middleware';
+import { AppConfig } from './common/providers/config/app.config';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { DatabaseConfig } from './common/providers/config/database.config';
+import { formatGqlError } from './common/utils/format-gql-error';
 import { TokensModule } from './tokens/tokens.module';
 import { UserModule } from './user/user.module';
 
@@ -51,11 +51,13 @@ import { UserModule } from './user/user.module';
       inject: [AppConfig],
       useFactory: ({ isDevMode }: AppConfig) => ({
         autoSchemaFile: true,
-        playground: isDevMode ? {
-          settings: {
-            'request.credentials': 'include'
-          }
-        } : false,
+        playground: isDevMode
+          ? {
+              settings: {
+                'request.credentials': 'include'
+              }
+            }
+          : false,
         useGlobalPrefix: true,
         context: ({ req, res }: any): any => ({ req, res }),
         formatError: formatGqlError(isDevMode)

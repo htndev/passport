@@ -1,12 +1,12 @@
-import { CookieSetterFunction } from './../../utils/types';
 import { Injectable } from '@nestjs/common';
-import { CookieOptions, Request, Response } from 'express';
+import { CookieOptions } from 'express';
 
 import { MicroserviceToken, Nullable } from '../../utils/types';
 import { SecurityConfig } from '../config/security.config';
 import { DateService } from '../date/date.service';
 import { TokenService } from '../token/token.service';
 import { Microservice, REFRESH_TOKEN_COOKIE } from './../../constants';
+import { CookieSetterFunction } from './../../utils/types';
 
 type MicroServiceTokenTuple = [Microservice, string];
 

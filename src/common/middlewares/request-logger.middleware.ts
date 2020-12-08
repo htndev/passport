@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
 import { Logger, NestMiddleware } from '@nestjs/common';
+import { Request, Response } from 'express';
 
 const logger = new Logger('Request');
 

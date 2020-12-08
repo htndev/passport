@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import { MICROSERVICES } from '../common/constants';
+import { MICROSERVICES, REFRESH_TOKEN_COOKIE } from '../common/constants';
 import { SecurityConfig } from '../common/providers/config/security.config';
-import { TokenService } from '../common/providers/token/token.service';
-import { CookieSetterFunction, MicroserviceToken, MicroserviceTokens } from '../common/utils/types';
-import { REFRESH_TOKEN_COOKIE } from '../common/constants';
 import { CookieService } from '../common/providers/cookie/cookie.service';
+import { TokenService } from '../common/providers/token/token.service';
+import { CookieSetterFunction, MicroserviceToken } from '../common/utils/types';
 
 @Injectable()
 export class TokensService {
@@ -15,9 +14,12 @@ export class TokensService {
     private readonly cookieService: CookieService
   ) {}
 
-  async getTokens(cookies: MicroserviceToken, cookieSetter: CookieSetterFunction): Promise<Required<MicroserviceToken>> {
+  async getTokens(
+    cookies: MicroserviceToken,
+    cookieSetter: CookieSetterFunction
+  ): Promise<Required<MicroserviceToken>> {
     if (Object.keys(cookies).length === MICROSERVICES.length) {
-      return {...cookies } as Required<MicroserviceToken>;
+      return { ...cookies } as Required<MicroserviceToken>;
     }
 
     const newTokens = await this.generateTokens(cookies, cookieSetter);

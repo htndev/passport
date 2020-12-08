@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
 
-import { Microservice, REFRESH_TOKEN_COOKIE } from './../../constants';
+import { Microservice } from './../../constants';
 import { BaseConfig } from './base.config';
 
 interface SecurityConfigProps {

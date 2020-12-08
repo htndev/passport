@@ -1,6 +1,7 @@
-import { Location } from '../entities/location.entity';
-import { LocationInfo } from '../common/utils/types';
 import { EntityRepository, Repository } from 'typeorm';
+
+import { LocationInfo } from '../common/utils/types';
+import { Location } from '../entities/location.entity';
 
 @EntityRepository(Location)
 export class LocationRepository extends Repository<Location> {

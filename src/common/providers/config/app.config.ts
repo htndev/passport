@@ -1,6 +1,7 @@
-import { BaseConfig } from './base.config';
-import * as Joi from 'joi';
 import { Injectable } from '@nestjs/common';
+import * as Joi from 'joi';
+
+import { BaseConfig } from './base.config';
 
 interface AppConfigProps {
   PORT: number;

@@ -1,5 +1,6 @@
-import { User } from '../../common/utils/types';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
+import { User } from '../../common/utils/types';
 
 export const GetUser = createParamDecorator(
   (data, ctx: ExecutionContext): User => {

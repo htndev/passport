@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { ExtendedBaseEntity } from './base.entity';
 
 @Entity({ name: 'user_email_confirmation' })

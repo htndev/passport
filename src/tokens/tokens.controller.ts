@@ -1,8 +1,9 @@
-import { HasRefreshTokenGuard } from './../common/guards/token/has-refresh-token.guard';
-import { Request, Response } from 'express';
-import { TokensService } from './tokens.service';
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Request, Response } from 'express';
+
+import { HasRefreshTokenGuard } from './../common/guards/token/has-refresh-token.guard';
+import { TokensService } from './tokens.service';
 
 @ApiTags('tokens')
 @Controller('tokens')

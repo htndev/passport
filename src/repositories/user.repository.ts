@@ -1,14 +1,13 @@
-import { SignInUserInput } from './../auth/inputs/sign-in-user.input';
 import { ConflictException } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { NewUserInput } from '../auth/inputs/new-user.input';
 import { ErrorMessage } from '../common/constants';
-import { PromisePick } from '../common/utils/types';
+import { AllowedUserFields, PromisePick } from '../common/utils/types';
 import { Location } from '../entities/location.entity';
 import { User } from '../entities/user.entity';
-import { AllowedUserFields } from '../common/utils/types';
+import { SignInUserInput } from './../auth/inputs/sign-in-user.input';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

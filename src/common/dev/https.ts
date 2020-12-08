@@ -1,5 +1,6 @@
 import { NestApplicationOptions } from '@nestjs/common';
 import { readFile } from 'fs';
+
 import { NodeEnv } from '../constants';
 
 export async function setupHttps(): Promise<NestApplicationOptions> {
