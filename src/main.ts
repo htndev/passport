@@ -30,6 +30,10 @@ async function bootstrap() {
   app.use(helmet({ contentSecurityPolicy: !config.isDevMode ? undefined : false }));
   app.use(compression());
 
+  if(config.isDebugMode) {
+    logger.verbose(`GraphQL playground available on ${config.url}/${config.apiVersion}/graphql`);
+  }
+
   if (config.enableSwagger) {
     setupSwagger(app);
   }

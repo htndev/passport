@@ -5,6 +5,7 @@ export const errorBuilder = (separator: string, ...errors: string[]): string => 
 
 export async function setupSwagger(app: INestApplication): Promise<void> {
   const packageConfig = await import('../../../package.json');
+  const logger = new Logger('Swagger');
 
   const options = new DocumentBuilder()
     .setTitle(packageConfig.name)
@@ -17,5 +18,5 @@ export async function setupSwagger(app: INestApplication): Promise<void> {
 
   SwaggerModule.setup('docs', app, document);
 
-  Logger.verbose(`Swagger documentation available on route /docs`);
+  logger.verbose(`Swagger documentation available on route /docs`);
 }
