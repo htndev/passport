@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 
-export const formatGqlError = (isDevMode: boolean) => (error: GraphQLError) => {
+export const formatGqlError = (isDevMode: boolean) => (error: GraphQLError): GraphQLError => {
   if (isDevMode) {
     return error;
   }

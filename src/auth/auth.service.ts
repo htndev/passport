@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { SecurityConfig } from '../common/providers/config/security.config';
@@ -17,6 +17,8 @@ import { UserJwtPayload } from './interface/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
+  readonly #logger = new Logger('Auth Service');
+
   constructor(
     @InjectRepository(UserRepository)
     private readonly userRepository: UserRepository,
@@ -59,6 +61,8 @@ export class AuthService {
 
     await this.cookieService.setBatchOfCookies(cookieSetter, tokens);
 
+    this.#logger.verbose(`User ${email} successfully signed up`);
+
     return { status: HttpStatus.CREATED, message: 'User successfully created' };
   }
 
@@ -70,12 +74,13 @@ export class AuthService {
 
     await this.setRefreshToken(cookieSetter, userData);
 
+    this.#logger.verbose(`User ${user.email} successfully signed in`);
+
     return { status: HttpStatus.OK };
   }
 
   async logout(cookieSetter: CookieSetterFunction): Promise<StatusType> {
-    let tokens = MICROSERVICES.map((microservice: string) => microservice);
-    tokens = [...tokens, REFRESH_TOKEN_COOKIE];
+    const tokens = [...MICROSERVICES, REFRESH_TOKEN_COOKIE];
 
     tokens.forEach((token: string) => {
       this.cookieService.deleteCookie(cookieSetter, token);
