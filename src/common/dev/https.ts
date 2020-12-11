@@ -14,7 +14,7 @@ export async function setupHttps(): Promise<NestApplicationOptions> {
       })
     );
 
-  const options: any = {};
+  const options: NestApplicationOptions = {};
 
   if (process.env.NODE_ENV === NodeEnv.DEVELOPMENT || !process.env.NODE_ENV) {
     const rootDir = __dirname + '/../../../';
