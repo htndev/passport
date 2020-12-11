@@ -11,7 +11,8 @@ yarn-error.log*
 lerna-debug.log*
 
 # Local files
-localhost.{crt|key}
+*.crt
+*.key
 
 # OS
 .DS_Store
