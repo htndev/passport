@@ -3,17 +3,17 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 
-import { CookieService } from '../../../common/providers/cookie/cookie.service';
+import { CookieService } from '../../providers/cookie/cookie.service';
 
 @Injectable()
-export class HasRefreshTokenGuard implements CanActivate {
+export class HasUuidGuard implements CanActivate {
   constructor(@Inject('CookieService') private readonly cookieService: CookieService) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const request: Request = GqlExecutionContext.create(context).getContext().req;
-    const refreshToken = this.cookieService.getRefreshToken(request.signedCookies);
+    const uuid = this.cookieService.getUuid(request.signedCookies);
 
-    if (!refreshToken) {
+    if (!uuid) {
       throw new UnauthorizedException();
     }
 

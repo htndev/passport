@@ -1,4 +1,6 @@
 import { CanActivate, ConflictException, ExecutionContext, Inject } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 
 import { ErrorMessage } from '../../../common/constants';
@@ -8,13 +10,13 @@ export class NotAuthorizedUser implements CanActivate {
   constructor(@Inject('CookieService') private readonly cookieService: CookieService) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const refreshToken = this.cookieService.getRefreshToken(request);
+    const request: Request = GqlExecutionContext.create(context).getContext().req;
+    const uuid = this.cookieService.getUuid(request.signedCookies);
 
-    if (refreshToken) {
+    if (uuid) {
       throw new ConflictException(ErrorMessage.UserAuthorized);
     }
 
-    return true as boolean;
+    return true;
   }
 }

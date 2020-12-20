@@ -1,9 +1,10 @@
+import { HttpStatus } from '@nestjs/common';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
-@ObjectType()
+@ObjectType({ description: 'Server status response' })
 export class StatusType {
   @Field(() => Int)
-  status: number;
+  status: HttpStatus;
 
   @Field({ nullable: true })
   message?: string;

@@ -29,6 +29,12 @@ export class User extends ExtendedBaseEntity {
   })
   password: string;
 
+  @Column({
+    type: 'varchar',
+    nullable: true
+  })
+  avatar: string;
+
   async comparePasswords(password: string): Promise<boolean> {
     return compare(password, this.password);
   }

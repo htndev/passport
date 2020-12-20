@@ -3,7 +3,7 @@ import { IsEmail, IsIP, IsLowercase, IsNotEmpty, Matches } from 'class-validator
 
 import { passwordRegexp, usernameRegexp } from '../../common/regexp';
 
-@InputType()
+@InputType({ description: 'Fields for new user' })
 export class NewUserInput {
   @Field()
   @IsNotEmpty()

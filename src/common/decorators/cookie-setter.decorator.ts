@@ -7,5 +7,6 @@ export const CookieSetter = createParamDecorator((_: unknown, ctx: ExecutionCont
   // ! Default context does not has an append method
   context.req.append = response.append.bind(context.res);
 
+  // ! Context lost cookies
   return (context?.res as Response)?.cookie.bind(context.res);
 });

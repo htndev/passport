@@ -1,3 +1,6 @@
+import { RedisWrapperService } from './../redis-wrapper/redis-wrapper.service';
+import { RedisWrapperModule } from './../redis-wrapper/redis-wrapper.module';
+import { TokenModule } from './../token/token.module';
 import { Global, Module } from '@nestjs/common';
 
 import { CommonModule } from './../../common.module';
@@ -8,8 +11,8 @@ import { CookieService } from './cookie.service';
 
 @Global()
 @Module({
-  imports: [CommonModule, ConfigModule],
-  providers: [CookieService, TokenService, DateService],
+  imports: [CommonModule, ConfigModule, TokenModule, RedisWrapperModule],
+  providers: [CookieService, TokenService, DateService, RedisWrapperService],
   exports: [CookieService]
 })
 export class CookieModule {}

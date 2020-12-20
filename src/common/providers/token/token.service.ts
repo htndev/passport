@@ -1,33 +1,38 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { reduceAsync } from 'src/common/utils/async-iterators';
 
-import { UserJwtPayload } from '../../../auth/interface/jwt-payload.interface';
 import { Microservice, MICROSERVICES } from '../../../common/constants';
+import { BaseUserJwtPayload, JwtPayload } from '../../interfaces/jwt-payload.interface';
 import { SecurityConfig } from '../../providers/config/security.config';
 import { MicroserviceToken } from '../../utils/types';
-import { JwtPayload } from './../../../auth/interface/jwt-payload.interface';
+import { RedisWrapperService } from './../redis-wrapper/redis-wrapper.service';
 
 @Injectable()
 export class TokenService {
   readonly #logger = new Logger('Token Service');
 
-  constructor(private readonly jwtService: JwtService, private readonly securityConfig: SecurityConfig) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly securityConfig: SecurityConfig,
+    private readonly redisWrapperService: RedisWrapperService
+  ) {}
 
-  async generateTokens(user: UserJwtPayload): Promise<Required<MicroserviceToken>> {
+  async generateTokens(user: BaseUserJwtPayload): Promise<Required<MicroserviceToken>> {
     this.#logger.verbose(`Generating tokens for ${user.email}`);
-
-    const tokens = MICROSERVICES.reduce(
+    const tokens: Required<MicroserviceToken> = await reduceAsync(
+      MICROSERVICES,
       async (acc: any, microservice: Microservice) => ({
         ...(await acc),
         ...(await this.generateToken(microservice, user))
       }),
-      Promise.resolve({} as MicroserviceToken)
+      {}
     );
 
     return tokens;
   }
 
-  async generateToken(microserivce: Microservice, user: UserJwtPayload): Promise<MicroserviceToken> {
+  async generateToken(microserivce: Microservice, user: BaseUserJwtPayload): Promise<MicroserviceToken> {
     const payload = {
       ...user,
       scope: microserivce
@@ -46,7 +51,7 @@ export class TokenService {
     });
   }
 
-  async generateRefreshToken(user: UserJwtPayload): Promise<any> {
+  async generateRefreshToken(user: BaseUserJwtPayload): Promise<any> {
     return this.jwtService.signAsync(user, {
       secret: this.securityConfig.jwtRefreshTokenSecret,
       expiresIn: this.securityConfig.jwtRefreshTokenExpiresIn

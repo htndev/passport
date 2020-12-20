@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CookieOptions } from 'express';
+import { CookieGetter } from 'src/common/decorators/cookie-getter.decorator';
 
 import { MicroserviceToken, Nullable } from '../../utils/types';
 import { SecurityConfig } from '../config/security.config';
 import { DateService } from '../date/date.service';
 import { TokenService } from '../token/token.service';
-import { Microservice, REFRESH_TOKEN_COOKIE } from './../../constants';
-import { CookieSetterFunction } from './../../utils/types';
+import { Microservice, REFRESH_TOKEN, UUID } from './../../constants';
+import { CookieSetterFunction, Cookies } from './../../utils/types';
 
 type MicroServiceTokenTuple = [Microservice, string];
 
@@ -43,7 +44,7 @@ export class CookieService {
     );
   }
 
-  getCookie(cookies: Record<string, any>, key: string): Nullable<string> {
+  getCookie(cookies: Cookies, key: string): Nullable<string> {
     return cookies[key] ?? '';
   }
 
@@ -55,7 +56,7 @@ export class CookieService {
     });
   }
 
-  getRefreshToken(cookies: Record<string, any>): string {
-    return this.getCookie(cookies, REFRESH_TOKEN_COOKIE);
+  getUuid(cookies: Cookies): Nullable<string> {
+    return this.getCookie(cookies, UUID);
   }
 }

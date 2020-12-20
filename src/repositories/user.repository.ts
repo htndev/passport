@@ -1,5 +1,6 @@
 import { ConflictException } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
+import { buildFieldLabels } from 'src/common/utils/build-field-labels';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { NewUserInput } from '../auth/inputs/new-user.input';
@@ -53,7 +54,9 @@ export class UserRepository extends Repository<User> {
     username: string;
   }): PromisePick<User, 'email' | 'username' | 'id'> {
     const query = this.createQueryBuilder(this.#label)
-      .select(this.buildFieldLabels(this.#label, ['id', 'username', 'email']))
+      .select(
+        buildFieldLabels<AllowedUserFields>(this.#label, ['id', 'username', 'email'])
+      )
       .where('username = :username', { username })
       .andWhere('email = :email', { email });
 
@@ -89,7 +92,7 @@ export class UserRepository extends Repository<User> {
 
   async getUser(fields: Record<string, any>): PromisePick<User, 'username' | 'id' | 'email' | 'locationId'> {
     return this.createQueryBuilder(this.#label)
-      .select(this.buildFieldLabels(this.#label, this.#defaultReturnFields))
+      .select(buildFieldLabels<AllowedUserFields>(this.#label, this.#defaultReturnFields))
       .where('username = :username', { username: fields.username })
       .getOne();
   }
@@ -97,17 +100,13 @@ export class UserRepository extends Repository<User> {
   async getUsersLike(
     filters: Record<string, any>,
     fields: AllowedUserFields[] = this.#defaultReturnFields
-  ): Promise<any> {
-    const _fields = this.buildFieldLabels(this.#label, fields);
+  ): Promise<User[]> {
+    const _fields = buildFieldLabels<AllowedUserFields>(this.#label, fields);
     const query = this.createQueryBuilder(this.#label);
     return query
       .select(_fields)
       .where('user.username ilike :username', { username: `%${filters.username}%` })
       .getMany();
-  }
-
-  private buildFieldLabels(label: string, fields: AllowedUserFields[]): AllowedUserFields[] {
-    return fields.reduce((acc, field) => [...acc, `${label}.${field}`], []);
   }
 
   private async getUserCredentials({
@@ -116,7 +115,9 @@ export class UserRepository extends Repository<User> {
     const query = this.createQueryBuilder(this.#label);
 
     return query
-      .select(this.buildFieldLabels(this.#label, ['username', 'email', 'password']))
+      .select(
+        buildFieldLabels<AllowedUserFields>(this.#label, ['username', 'email', 'password'])
+      )
       .where('email = :email', { email })
       .getOne();
   }

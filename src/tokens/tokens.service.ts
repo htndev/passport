@@ -1,37 +1,34 @@
+import { TokenType } from './../common/utils/types';
+import { mapAsync } from './../common/utils/async-iterators';
+import { MICROSERVICES, REFRESH_TOKEN } from './../common/constants';
 import { Injectable } from '@nestjs/common';
 
-import { MICROSERVICES, REFRESH_TOKEN_COOKIE } from '../common/constants';
 import { SecurityConfig } from '../common/providers/config/security.config';
 import { CookieService } from '../common/providers/cookie/cookie.service';
 import { TokenService } from '../common/providers/token/token.service';
 import { CookieSetterFunction, MicroserviceToken } from '../common/utils/types';
+import { RedisWrapperService } from './../common/providers/redis-wrapper/redis-wrapper.service';
 
 @Injectable()
 export class TokensService {
   constructor(
     private readonly tokenService: TokenService,
     private readonly securityConfig: SecurityConfig,
-    private readonly cookieService: CookieService
+    private readonly cookieService: CookieService,
+    private readonly redisWrapperService: RedisWrapperService
   ) {}
 
-  async getTokens(
-    cookies: MicroserviceToken,
-    cookieSetter: CookieSetterFunction
-  ): Promise<Required<MicroserviceToken>> {
-    if (Object.keys(cookies).length === MICROSERVICES.length) {
-      return { ...cookies } as Required<MicroserviceToken>;
+  async getTokens(uuid: string): Promise<Required<MicroserviceToken>> {
+    const tokens = await this.redisWrapperService.getAvailableTokens(uuid);
+    if (Object.keys(tokens).length === MICROSERVICES.length) {
+      return { ...tokens } as Required<MicroserviceToken>;
     }
 
-    const newTokens = await this.generateTokens(cookies, cookieSetter);
-
-    return newTokens;
+    return this.generateTokens(uuid);
   }
 
-  async generateTokens(
-    cookies: Record<string, any>,
-    cookieSetter: CookieSetterFunction
-  ): Promise<Required<MicroserviceToken>> {
-    const refreshToken = this.cookieService.getCookie(cookies, REFRESH_TOKEN_COOKIE);
+  async generateTokens(uuid: string): Promise<Required<MicroserviceToken>> {
+    const refreshToken = await this.redisWrapperService.getToken(uuid, REFRESH_TOKEN);
 
     const { username, email } = await this.tokenService.parseToken(
       refreshToken,
@@ -39,7 +36,10 @@ export class TokensService {
     );
 
     const tokens = await this.tokenService.generateTokens({ username, email });
-    await this.cookieService.setBatchOfCookies(cookieSetter, tokens);
+
+    await mapAsync(Object.entries(tokens), async ([microservice, token]: [TokenType, string]) =>
+      this.redisWrapperService.setToken(uuid, microservice, token, this.securityConfig.jwtAccessTokenExpiresIn)
+    );
 
     return tokens as Required<MicroserviceToken>;
   }

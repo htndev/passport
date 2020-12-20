@@ -1,23 +1,20 @@
 import { UseGuards } from '@nestjs/common';
 import { Query, Resolver } from '@nestjs/graphql';
 
-import { HasRefreshTokenGuard } from '../common/guards/token/has-refresh-token.guard';
+import { HasUuidGuard } from '../common/guards/token/has-uuid.guard';
 import { CookieSetterFunction } from '../common/utils/types';
-import { CookieGetter } from './../common/decorators/cookie-getter.decorator';
 import { CookieSetter } from './../common/decorators/cookie-setter.decorator';
-import { TokenType } from './../common/types/token.type';
+import { GetUuid } from './../common/decorators/get-uuid.decorator';
+import { TokenType } from './token.type';
 import { TokensService } from './tokens.service';
 
-@UseGuards(HasRefreshTokenGuard)
-@Resolver((of) => TokenType)
+@UseGuards(HasUuidGuard)
+@Resolver(() => TokenType)
 export class TokensResolver {
   constructor(private readonly tokensService: TokensService) {}
 
-  @Query((returns) => TokenType)
-  async getTokens(
-    @CookieGetter() cookies: Record<string, any>,
-    @CookieSetter() cookieSetter: CookieSetterFunction
-  ): Promise<any> {
-    return this.tokensService.getTokens(cookies, cookieSetter);
+  @Query(() => TokenType)
+  async getTokens(@GetUuid() uuid: string): Promise<TokenType> {
+    return this.tokensService.getTokens(uuid);
   }
 }

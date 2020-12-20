@@ -1,13 +1,14 @@
+import { RedisWrapperModule } from './../common/providers/redis-wrapper/redis-wrapper.module';
 import { Module } from '@nestjs/common';
 
 import { CommonModule } from './../common/common.module';
 import { CookieModule } from './../common/providers/cookie/cookie.module';
-import { TokenService } from './../common/providers/token/token.service';
+import { TokenModule } from './../common/providers/token/token.module';
 import { TokensResolver } from './tokens.resolver';
 import { TokensService } from './tokens.service';
 
 @Module({
-  imports: [CommonModule, CookieModule],
-  providers: [TokensResolver, TokensService, TokenService]
+  imports: [CommonModule, CookieModule, TokenModule, RedisWrapperModule],
+  providers: [TokensResolver, TokensService]
 })
 export class TokensModule {}

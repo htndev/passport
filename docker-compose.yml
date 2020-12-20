@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:alpine
+    container_name: psql-xbeat
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5433:5432
+  redis:
+    image: redis:alpine
+    container_name: redis-xbeat
+    command: redis-server --requirepass SuP3R_!S3re7&_*
+    ports:
+      - 6380:6379

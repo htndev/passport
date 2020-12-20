@@ -2,6 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { RedisModule } from 'nestjs-redis';
 
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
@@ -9,14 +10,14 @@ import { RequestLoggerMiddleware } from './common/middlewares/request-logger.mid
 import { AppConfig } from './common/providers/config/app.config';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { DatabaseConfig } from './common/providers/config/database.config';
+import { RedisConfig } from './common/providers/config/redis.config';
 import { formatGqlError } from './common/utils/format-gql-error';
+import { LocationModule } from './location/location.module';
 import { TokensModule } from './tokens/tokens.module';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    AuthModule,
-    CommonModule,
     ConfigModule.forRoot({
       envFilePath: '.dev.env',
       ignoreEnvFile: process.env.NODE_ENV === 'production'
@@ -32,11 +33,13 @@ import { UserModule } from './user/user.module';
         database,
         synchronize,
         logging,
+        port,
         dbConnectionRetryAttempts: retryAttempts
       }: DatabaseConfig) =>
         ({
           type,
           host,
+          port,
           username,
           password,
           database,
@@ -63,8 +66,22 @@ import { UserModule } from './user/user.module';
         formatError: formatGqlError(isDevMode)
       })
     }),
+    RedisModule.forRootAsync({
+      imports: [ConfigManagerModule],
+      inject: [RedisConfig],
+      useFactory: ({ port, password, host, keyPrefix, name }: RedisConfig) => ({
+        name,
+        port,
+        host,
+        password,
+        keyPrefix
+      })
+    }),
+    AuthModule,
+    CommonModule,
     TokensModule,
-    UserModule
+    UserModule,
+    LocationModule
   ]
 })
 export class AppModule implements NestModule {

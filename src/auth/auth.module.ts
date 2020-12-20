@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CommonModule } from '../common/common.module';
 import { ConfigModule as ConfigManagerModule } from '../common/providers/config/config.module';
+import { CookieModule } from '../common/providers/cookie/cookie.module';
 import { LocationIdentifierModule } from '../common/providers/location-identifier/location-identifier.module';
-import { TokenService } from '../common/providers/token/token.service';
+import { JwtStrategy } from '../common/strategies/jwt.strategy';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { CommonModule } from './../common/common.module';
-import { CookieModule } from './../common/providers/cookie/cookie.module';
+import { RedisWrapperModule } from './../common/providers/redis-wrapper/redis-wrapper.module';
+import { TokenModule } from './../common/providers/token/token.module';
+import { UuidModule } from './../common/providers/uuid/uuid.module';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -18,8 +20,12 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     TypeOrmModule.forFeature([UserRepository, LocationRepository]),
     LocationIdentifierModule,
     ConfigManagerModule,
-    CookieModule
+    CookieModule,
+    TokenModule,
+    RedisWrapperModule,
+    UuidModule
   ],
-  providers: [AuthResolver, AuthService, JwtStrategy, TokenService]
+  providers: [AuthResolver, AuthService, JwtStrategy],
+  exports: [JwtStrategy]
 })
 export class AuthModule {}

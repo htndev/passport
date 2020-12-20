@@ -7,6 +7,7 @@ import { BaseConfig } from './base.config';
 interface DatabaseConfigProps {
   DB_TYPE: DatabaseType;
   DB_HOST: string;
+  DB_PORT: number;
   DB_USERNAME: string;
   DB_PASSWORD: string;
   DB_NAME: string;
@@ -23,6 +24,7 @@ export class DatabaseConfig extends BaseConfig<DatabaseConfigProps> {
       DB_USERNAME: Joi.string().required(),
       DB_PASSWORD: Joi.string().required(),
       DB_HOST: Joi.string().required(),
+      DB_PORT: Joi.number().required(),
       DB_NAME: Joi.string().required(),
       DB_LOGGING: Joi.boolean().default(true),
       DB_SYNCHRONIZE: Joi.boolean().required(),
@@ -36,6 +38,10 @@ export class DatabaseConfig extends BaseConfig<DatabaseConfigProps> {
 
   get host(): string {
     return this.config.DB_HOST;
+  }
+
+  get port(): number {
+    return this.config.DB_PORT;
   }
 
   get username(): string {

@@ -1,9 +1,9 @@
-export interface UserJwtPayload {
+export interface BaseUserJwtPayload {
   username: string;
   email: string;
 }
 
-export interface JwtPayload extends UserJwtPayload {
+export interface JwtPayload extends BaseUserJwtPayload {
   scope?: string;
   iss?: string;
   iat?: number;

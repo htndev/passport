@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
-import { ConfigModule as ConfigManagerModule } from '../common/providers/config/config.module';
+import { ConfigModule } from '../common/providers/config/config.module';
 import { AppConfig } from './providers/config/app.config';
 import { SecurityConfig } from './providers/config/security.config';
 import { DateService } from './providers/date/date.service';
@@ -10,12 +10,12 @@ import { DateService } from './providers/date/date.service';
 @Module({
   imports: [
     PassportModule.registerAsync({
-      imports: [ConfigManagerModule],
+      imports: [ConfigModule],
       inject: [SecurityConfig],
       useFactory: ({ defaultPassportStrategy: defaultStrategy }: SecurityConfig) => ({ defaultStrategy })
     }),
     JwtModule.registerAsync({
-      imports: [ConfigManagerModule],
+      imports: [ConfigModule],
       inject: [SecurityConfig, AppConfig],
       useFactory: (
         { jwtPassportTokenSecret: secret, jwtAccessTokenExpiresIn: expiresIn }: SecurityConfig,
@@ -25,9 +25,9 @@ import { DateService } from './providers/date/date.service';
         signOptions: { expiresIn, issuer, subject: 'auth' }
       })
     }),
-    ConfigManagerModule
+    ConfigModule
   ],
   providers: [DateService],
-  exports: [PassportModule, JwtModule, ConfigManagerModule, DateService]
+  exports: [PassportModule, JwtModule, ConfigModule, DateService]
 })
 export class CommonModule {}
