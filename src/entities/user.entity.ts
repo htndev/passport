@@ -1,11 +1,12 @@
 import { compare } from 'bcrypt';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { ExtendedBaseEntity } from './base.entity';
+import { EnhancedBaseEntity } from './base.entity';
 import { Location } from './location.entity';
+import { UserAvatar } from './user-avatar.entity';
 
 @Entity({ name: 'users' })
-export class User extends ExtendedBaseEntity {
+export class User extends EnhancedBaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,15 +30,12 @@ export class User extends ExtendedBaseEntity {
   })
   password: string;
 
+  @OneToMany(() => UserAvatar, (avatar: UserAvatar) => avatar.owner, { eager: true })
   @Column({
     type: 'varchar',
     nullable: true
   })
-  avatar: string;
-
-  async comparePasswords(password: string): Promise<boolean> {
-    return compare(password, this.password);
-  }
+  avatar: UserAvatar;
 
   @ManyToOne(() => Location, (location) => location.users, { eager: false })
   @JoinColumn()
@@ -45,4 +43,8 @@ export class User extends ExtendedBaseEntity {
 
   @Column()
   locationId: number;
+
+  async comparePasswords(password: string): Promise<boolean> {
+    return compare(password, this.password);
+  }
 }

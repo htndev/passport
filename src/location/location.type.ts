@@ -1,5 +1,6 @@
-import { LocationInfo } from './../common/utils/types';
 import { Field, ObjectType } from '@nestjs/graphql';
+
+import { LocationInfo } from './../common/utils/types';
 
 const OPTIONS = { nullable: true };
 

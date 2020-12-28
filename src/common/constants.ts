@@ -1,4 +1,5 @@
 import { TokenType } from './utils/types';
+
 export enum ErrorMessage {
   WrongEmailOrPassword = 'Wrong email or password',
   UserAuthorized = 'User is already authorized',

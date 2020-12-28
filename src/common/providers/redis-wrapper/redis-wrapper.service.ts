@@ -3,9 +3,9 @@ import { KeyType, Ok, Redis, ValueType } from 'ioredis';
 import { isEmpty } from 'lodash';
 import { RedisService } from 'nestjs-redis';
 
-import { TOKEN_PREFIX, TOKENS, Microservice, MICROSERVICES } from './../../constants';
+import { MICROSERVICES, TOKEN_PREFIX } from './../../constants';
 import { mapAsync } from './../../utils/async-iterators';
-import { Nullable, TokenType, MicroserviceToken, Tokens } from './../../utils/types';
+import { MicroserviceToken, Nullable, TokenType } from './../../utils/types';
 import { RedisConfig } from './../config/redis.config';
 
 type SetOptions = {

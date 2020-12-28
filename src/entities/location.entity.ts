@@ -1,10 +1,10 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { ExtendedBaseEntity } from './base.entity';
+import { EnhancedBaseEntity } from './base.entity';
 import { User } from './user.entity';
 
 @Entity({ name: 'locations' })
-export class Location extends ExtendedBaseEntity {
+export class Location extends EnhancedBaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

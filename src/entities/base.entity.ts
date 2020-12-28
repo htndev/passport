@@ -1,6 +1,6 @@
 import { BaseEntity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-export class ExtendedBaseEntity extends BaseEntity {
+export class EnhancedBaseEntity extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 

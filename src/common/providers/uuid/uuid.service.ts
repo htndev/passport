@@ -1,10 +1,10 @@
-import { RedisConfig } from './../config/redis.config';
 import { Injectable, Logger } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 
 import { UUID } from '../../constants';
 import { SecurityConfig } from '../config/security.config';
 import { RedisWrapperService } from '../redis-wrapper/redis-wrapper.service';
+import { RedisConfig } from './../config/redis.config';
 
 @Injectable()
 export class UuidService {

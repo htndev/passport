@@ -40,7 +40,7 @@ export class RedisConfig extends BaseConfig<RedisConfigProps> {
   }
 
   get keyPrefix(): string {
-    return this.config.REDIS_KEY_PREFIX;
+    return `${this.config.REDIS_KEY_PREFIX}${this.redisSeparator}`;
   }
 
   get name(): string {

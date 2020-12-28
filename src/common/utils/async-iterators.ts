@@ -1,5 +1,3 @@
-import { Callback } from 'graphql-tools';
-
 export const mapAsync = async <T, U>(
   array: T[],
   callback: (item?: T, index?: number, array?: T[]) => U

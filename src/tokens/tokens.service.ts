@@ -1,13 +1,13 @@
-import { TokenType } from './../common/utils/types';
-import { mapAsync } from './../common/utils/async-iterators';
-import { MICROSERVICES, REFRESH_TOKEN } from './../common/constants';
 import { Injectable } from '@nestjs/common';
 
 import { SecurityConfig } from '../common/providers/config/security.config';
 import { CookieService } from '../common/providers/cookie/cookie.service';
 import { TokenService } from '../common/providers/token/token.service';
-import { CookieSetterFunction, MicroserviceToken } from '../common/utils/types';
+import { MicroserviceToken } from '../common/utils/types';
+import { MICROSERVICES, REFRESH_TOKEN } from './../common/constants';
 import { RedisWrapperService } from './../common/providers/redis-wrapper/redis-wrapper.service';
+import { mapAsync } from './../common/utils/async-iterators';
+import { TokenType } from './../common/utils/types';
 
 @Injectable()
 export class TokensService {

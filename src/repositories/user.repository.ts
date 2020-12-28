@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
 import { buildFieldLabels } from 'src/common/utils/build-field-labels';
 import { EntityRepository, Repository } from 'typeorm';
@@ -10,6 +10,7 @@ import { Location } from '../entities/location.entity';
 import { User } from '../entities/user.entity';
 import { SignInUserInput } from './../auth/inputs/sign-in-user.input';
 
+@Injectable()
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   readonly #label = 'user';
@@ -39,9 +40,9 @@ export class UserRepository extends Repository<User> {
     return query.getOne();
   }
 
-  async findUserByUsername(username: string): PromisePick<User, 'username'> {
+  async findUserByUsername<T extends string[]>(username: string, fields?: T): Promise<User> {
     const query = this.createQueryBuilder(this.#label)
-      .select(['user.username'])
+      .select(buildFieldLabels(this.#label, fields ?? ['username']))
       .where('username = :username', { username });
     return query.getOne();
   }
@@ -106,6 +107,13 @@ export class UserRepository extends Repository<User> {
     return query
       .select(_fields)
       .where('user.username ilike :username', { username: `%${filters.username}%` })
+      .getMany();
+  }
+
+  async getUsersByLocation(id: number): Promise<User[]> {
+    return this.createQueryBuilder(this.#label)
+      .select(buildFieldLabels(this.#label, ['id', 'username', 'email', 'locationId']))
+      .where('user.locationId = :id', { id })
       .getMany();
   }
 

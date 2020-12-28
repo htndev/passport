@@ -1,24 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CookieOptions } from 'express';
-import { CookieGetter } from 'src/common/decorators/cookie-getter.decorator';
 
-import { MicroserviceToken, Nullable } from '../../utils/types';
-import { SecurityConfig } from '../config/security.config';
-import { DateService } from '../date/date.service';
-import { TokenService } from '../token/token.service';
-import { Microservice, REFRESH_TOKEN, UUID } from './../../constants';
-import { CookieSetterFunction, Cookies } from './../../utils/types';
+import { Nullable } from '../../utils/types';
+import { Microservice, UUID } from './../../constants';
+import { Cookies, CookieSetterFunction } from './../../utils/types';
 
 type MicroServiceTokenTuple = [Microservice, string];
 
 @Injectable()
 export class CookieService {
-  constructor(
-    private readonly securityConfig: SecurityConfig,
-    private readonly tokenService: TokenService,
-    private readonly dateService: DateService
-  ) {}
-
   private readonly cookieOptions: CookieOptions = {
     sameSite: 'none',
     secure: true,
@@ -31,17 +21,6 @@ export class CookieService {
       ...this.cookieOptions,
       expires
     });
-  }
-
-  async setBatchOfCookies(cookieSetter: CookieSetterFunction, tokens: Required<MicroserviceToken>): Promise<void> {
-    await Promise.all(
-      Object.entries(tokens).map(async ([microservice, token]: MicroServiceTokenTuple) => {
-        const secret = this.securityConfig.getMicroserviceToken(microservice);
-        const { exp, scope } = await this.tokenService.parseToken(token, secret);
-
-        this.setCookie(cookieSetter, scope, token, this.dateService.timestampToDate(exp));
-      })
-    );
   }
 
   getCookie(cookies: Cookies, key: string): Nullable<string> {

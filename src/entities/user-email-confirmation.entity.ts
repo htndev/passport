@@ -1,9 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { ExtendedBaseEntity } from './base.entity';
+import { EnhancedBaseEntity } from './base.entity';
 
 @Entity({ name: 'user_email_confirmation' })
-export class UserEmailConfirmation extends ExtendedBaseEntity {
+export class UserEmailConfirmation extends EnhancedBaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

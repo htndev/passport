@@ -1,11 +1,11 @@
-import { isNil } from './../common/utils/object';
-import { LocationFilterInput } from './../location/inputs/location-filter.input';
-import { buildFieldLabels } from 'src/common/utils/build-field-labels';
 import { Injectable } from '@nestjs/common';
+import { buildFieldLabels } from 'src/common/utils/build-field-labels';
 import { EntityRepository, Repository } from 'typeorm';
 
-import { LocationInfo } from '../common/utils/types';
+import { LocationInfo, Nullable } from '../common/utils/types';
 import { Location } from '../entities/location.entity';
+import { isNil } from './../common/utils/object';
+import { LocationFilterInput } from './../location/inputs/location-filter.input';
 
 type AllowedFields = keyof (LocationInfo & { id: number });
 
@@ -70,5 +70,12 @@ export class LocationRepository extends Repository<Location> {
     await newLocation.save();
 
     return newLocation;
+  }
+
+  async findLocationById(id: number): Promise<Nullable<Location>> {
+    return this.createQueryBuilder(this.#label)
+      .select(buildFieldLabels(this.#label, ['id', 'country', 'code', 'region', 'city']))
+      .where('id = :id', { id })
+      .getOne();
   }
 }
