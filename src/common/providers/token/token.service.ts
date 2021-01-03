@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { reduceAsync } from 'src/common/utils/async-iterators';
+import { reduceAsync } from 'src/common/utils/async-iterators.util';
 
 import { Microservice, MICROSERVICES } from '../../../common/constants';
 import { BaseUserJwtPayload, JwtPayload } from '../../interfaces/jwt-payload.interface';
 import { SecurityConfig } from '../../providers/config/security.config';
-import { MicroserviceToken } from '../../utils/types';
+import { MicroserviceToken } from '../../types';
 import { RedisWrapperService } from './../redis-wrapper/redis-wrapper.service';
 
 @Injectable()

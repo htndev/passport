@@ -7,7 +7,7 @@ import { CookieService } from '../common/providers/cookie/cookie.service';
 import { DateService } from '../common/providers/date/date.service';
 import { LocationIdentifierService } from '../common/providers/location-identifier/location-identifier.service';
 import { TokenService } from '../common/providers/token/token.service';
-import { CookieSetterFunction, MicroserviceToken, TokenType } from '../common/utils/types';
+import { CookieSetterFunction, MicroserviceToken, TokenType } from '../common/types';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { Microservice, REFRESH_TOKEN, TOKENS, UUID } from './../common/constants';

@@ -12,7 +12,7 @@ import { AppConfig } from './common/providers/config/app.config';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { DatabaseConfig } from './common/providers/config/database.config';
 import { RedisConfig } from './common/providers/config/redis.config';
-import { formatGqlError } from './common/utils/format-gql-error';
+import { formatGqlError } from './common/utils/format-gql-error.util';
 import { LocationModule } from './location/location.module';
 import { TokensModule } from './tokens/tokens.module';
 import { UserModule } from './user/user.module';

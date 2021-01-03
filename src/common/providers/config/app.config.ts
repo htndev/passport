@@ -10,7 +10,6 @@ interface AppConfigProps {
   API_VERSION: string;
   ENABLE_SWAGGER: boolean;
   APP_HOSTNAME: string;
-  URL: string;
 }
 
 @Injectable()

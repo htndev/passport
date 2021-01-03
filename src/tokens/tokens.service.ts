@@ -3,11 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { SecurityConfig } from '../common/providers/config/security.config';
 import { CookieService } from '../common/providers/cookie/cookie.service';
 import { TokenService } from '../common/providers/token/token.service';
-import { MicroserviceToken } from '../common/utils/types';
+import { MicroserviceToken, TokenType } from '../common/types';
+import { mapAsync } from '../common/utils/async-iterators.util';
 import { MICROSERVICES, REFRESH_TOKEN } from './../common/constants';
 import { RedisWrapperService } from './../common/providers/redis-wrapper/redis-wrapper.service';
-import { mapAsync } from './../common/utils/async-iterators';
-import { TokenType } from './../common/utils/types';
 
 @Injectable()
 export class TokensService {

@@ -1,11 +1,11 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
-import { buildFieldLabels } from 'src/common/utils/build-field-labels';
+import { buildFieldLabels } from 'src/common/utils/build-field-labels.util';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { NewUserInput } from '../auth/inputs/new-user.input';
 import { ErrorMessage } from '../common/constants';
-import { AllowedUserFields, PromisePick } from '../common/utils/types';
+import { AllowedUserFields, PromisePick } from '../common/types';
 import { Location } from '../entities/location.entity';
 import { User } from '../entities/user.entity';
 import { SignInUserInput } from './../auth/inputs/sign-in-user.input';

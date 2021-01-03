@@ -3,8 +3,8 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
 import { CookieSetter } from '../common/decorators/cookie-setter.decorator';
 import { HasUuidGuard } from '../common/guards/token/has-uuid.guard';
+import { CookieSetterFunction } from '../common/types';
 import { StatusType } from '../common/types/status.type';
-import { CookieSetterFunction } from '../common/utils/types';
 import { GetUuid } from './../common/decorators/get-uuid.decorator';
 import { NotAuthorizedUser } from './../common/guards/auth/not-authorized-user.guard';
 import { AuthService } from './auth.service';

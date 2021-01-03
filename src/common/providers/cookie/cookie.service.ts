@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CookieOptions } from 'express';
 
-import { Nullable } from '../../utils/types';
+import { Cookies, CookieSetterFunction, Nullable } from '../../types';
 import { Microservice, UUID } from './../../constants';
-import { Cookies, CookieSetterFunction } from './../../utils/types';
 
 type MicroServiceTokenTuple = [Microservice, string];
 

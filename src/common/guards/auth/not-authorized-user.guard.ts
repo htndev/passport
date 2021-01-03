@@ -5,7 +5,7 @@ import { ErrorMessage, UUID } from '../../../common/constants';
 import { REFRESH_TOKEN } from '../../constants';
 import { CookieService } from '../../providers/cookie/cookie.service';
 import { RedisWrapperService } from '../../providers/redis-wrapper/redis-wrapper.service';
-import { getBindContext } from './../../utils/cookie-context-binder';
+import { getBindContext } from '../../utils/cookie-context-binder.util';
 
 export class NotAuthorizedUser implements CanActivate {
   constructor(

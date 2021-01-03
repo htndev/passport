@@ -1,9 +1,8 @@
 import { CookieOptions } from 'express';
 
-import { User as UserEntity } from '../../entities/user.entity';
-import { Microservice } from '../constants';
-import { BaseUserJwtPayload } from '../interfaces/jwt-payload.interface';
-import { REFRESH_TOKEN } from './../constants';
+import { User as UserEntity } from '../entities/user.entity';
+import { Microservice, REFRESH_TOKEN } from './constants';
+import { BaseUserJwtPayload } from './interfaces/jwt-payload.interface';
 
 export type Cookies = Record<Microservice, string>;
 

@@ -1,4 +1,4 @@
-import { TokenType } from './utils/types';
+import { TokenType } from './types';
 
 export enum ErrorMessage {
   WrongEmailOrPassword = 'Wrong email or password',

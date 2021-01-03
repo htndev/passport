@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { buildFieldLabels } from 'src/common/utils/build-field-labels';
+import { buildFieldLabels } from 'src/common/utils/build-field-labels.util';
 import { EntityRepository, Repository } from 'typeorm';
 
-import { LocationInfo, Nullable } from '../common/utils/types';
+import { LocationInfo, Nullable } from '../common/types';
+import { isNil } from '../common/utils/object.util';
 import { Location } from '../entities/location.entity';
-import { isNil } from './../common/utils/object';
 import { LocationFilterInput } from './../location/inputs/location-filter.input';
 
 type AllowedFields = keyof (LocationInfo & { id: number });
