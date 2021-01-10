@@ -1,9 +1,8 @@
 import { compare } from 'bcrypt';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { EnhancedBaseEntity } from './enhanced-base.entity';
 import { Location } from './location.entity';
-import { Avatar } from './avatar.entity';
 
 @Entity({ name: 'users' })
 export class User extends EnhancedBaseEntity {
@@ -30,12 +29,11 @@ export class User extends EnhancedBaseEntity {
   })
   password: string;
 
-  @OneToMany(() => Avatar, (avatar: Avatar) => avatar.owner, { eager: true })
   @Column({
     type: 'varchar',
     nullable: true
   })
-  avatar: Avatar;
+  avatar: string;
 
   @ManyToOne(() => Location, (location) => location.users, { eager: false })
   @JoinColumn()

@@ -10,4 +10,7 @@ export class UserType {
 
   @Field()
   username: string;
+
+  @Field({ nullable: true })
+  avatar: string;
 }

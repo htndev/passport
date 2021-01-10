@@ -1,13 +1,14 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
+import { Maybe } from '../common/constants/type.constant';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { JwtGuard } from '../common/guards/auth/jwt.guard';
 import { Location } from '../entities/location.entity';
 import { User } from '../entities/user.entity';
 import { LocationService } from '../location/location.service';
 import { LocationType } from '../location/location.type';
-import { Maybe } from '../common/constants/type.constant';
+import { StatusType } from './../common/types/status.type';
 import { UserSearchInput } from './inputs/user-search.input';
 import { UserService } from './user.service';
 import { UserType } from './user.type';
@@ -17,11 +18,14 @@ import { UserType } from './user.type';
 export class UserResolver {
   constructor(private readonly userService: UserService, private readonly locationService: LocationService) {}
 
+  @Mutation(() => StatusType)
+  async updateAvatar(@Args('avatar', { nullable: false }) avatar: string, @CurrentUser() user: UserType): Promise<StatusType> {
+    return this.userService.updateUserAvatar(avatar, user);
+  }
+
   @Query(() => UserType)
   async user(@Args('username') username: string): Promise<any> {
-    const user = await this.userService.getUser(username);
-
-    return user;
+    return this.userService.getUser(username);
   }
 
   @Query(() => [UserType])

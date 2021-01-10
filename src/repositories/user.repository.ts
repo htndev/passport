@@ -33,7 +33,7 @@ export class UserRepository extends Repository<User> {
     return user.save();
   }
 
-  async findUserByEmail(email: string): Promise<Pick<User, "email"> | undefined> {
+  async findUserByEmail(email: string): Promise<Pick<User, 'email'> | undefined> {
     const query = this.createQueryBuilder(this.#label)
       .select(['user.email'])
       .where('email = :email', { email });
@@ -53,15 +53,20 @@ export class UserRepository extends Repository<User> {
   }: {
     email: string;
     username: string;
-  }): Promise<Pick<User, "email" | "username" | "id"> | undefined> {
+  }): Promise<Pick<User, 'email' | 'username' | 'id'> | undefined> {
     const query = this.createQueryBuilder(this.#label)
-      .select(
-        buildFieldLabels(this.#label, ['id', 'username', 'email'])
-      )
+      .select(buildFieldLabels(this.#label, ['id', 'username', 'email', 'avatar']))
       .where('username = :username', { username })
       .andWhere('email = :email', { email });
 
     return query.getOne();
+  }
+
+  async findById(id: number): Promise<User | undefined> {
+    return this.createQueryBuilder(this.#label)
+      .select(buildFieldLabels(this.#label, ['id', 'username', 'email', 'avatar']))
+      .where('id = :id', { id })
+      .getOne();
   }
 
   private async hashPassword(password: string): Promise<{ password: string }> {
@@ -91,7 +96,9 @@ export class UserRepository extends Repository<User> {
     };
   }
 
-  async getUser(fields: Record<string, any>): Promise<Pick<User, "email" | "username" | "id" | "locationId"> | undefined> {
+  async getUser(
+    fields: Record<string, any>
+  ): Promise<Pick<User, 'email' | 'username' | 'id' | 'locationId'> | undefined> {
     return this.createQueryBuilder(this.#label)
       .select(buildFieldLabels(this.#label, this.#defaultReturnFields))
       .where('username = :username', { username: fields.username })
@@ -112,20 +119,18 @@ export class UserRepository extends Repository<User> {
 
   async getUsersByLocation(id: number): Promise<User[]> {
     return this.createQueryBuilder(this.#label)
-      .select(buildFieldLabels(this.#label, ['id', 'username', 'email', 'locationId']))
+      .select(buildFieldLabels(this.#label, ['id', 'username', 'email', 'locationId', 'avatar']))
       .where('user.locationId = :id', { id })
       .getMany();
   }
 
   private async getUserCredentials({
     email
-  }): Promise<Pick<User, "email" | "username" | "password" | "comparePasswords"> | undefined> {
+  }): Promise<Pick<User, 'email' | 'username' | 'password' | 'comparePasswords'> | undefined> {
     const query = this.createQueryBuilder(this.#label);
 
     return query
-      .select(
-        buildFieldLabels(this.#label, ['username', 'email', 'password'])
-      )
+      .select(buildFieldLabels(this.#label, ['username', 'email', 'password']))
       .where('email = :email', { email })
       .getOne();
   }
