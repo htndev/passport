@@ -1,19 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
+import { MICROSERVICES } from '../common/constants/microservice.constant';
+import { REFRESH_TOKEN } from '../common/constants/token.constant';
+import { MicroserviceToken, TokenType } from '../common/constants/type.constant';
 import { SecurityConfig } from '../common/providers/config/security.config';
-import { CookieService } from '../common/providers/cookie/cookie.service';
+import { RedisWrapperService } from '../common/providers/redis-wrapper/redis-wrapper.service';
 import { TokenService } from '../common/providers/token/token.service';
-import { MicroserviceToken, TokenType } from '../common/types';
 import { mapAsync } from '../common/utils/async-iterators.util';
-import { MICROSERVICES, REFRESH_TOKEN } from './../common/constants';
-import { RedisWrapperService } from './../common/providers/redis-wrapper/redis-wrapper.service';
 
 @Injectable()
 export class TokensService {
   constructor(
     private readonly tokenService: TokenService,
     private readonly securityConfig: SecurityConfig,
-    private readonly cookieService: CookieService,
     private readonly redisWrapperService: RedisWrapperService
   ) {}
 
@@ -27,7 +26,7 @@ export class TokensService {
   }
 
   async generateTokens(uuid: string): Promise<Required<MicroserviceToken>> {
-    const refreshToken = await this.redisWrapperService.getToken(uuid, REFRESH_TOKEN);
+    const refreshToken = await this.redisWrapperService.getToken(uuid, REFRESH_TOKEN) as string;
 
     const { username, email } = await this.tokenService.parseToken(
       refreshToken,

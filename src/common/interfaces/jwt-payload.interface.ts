@@ -4,9 +4,9 @@ export interface BaseUserJwtPayload {
 }
 
 export interface JwtPayload extends BaseUserJwtPayload {
-  scope?: string;
-  iss?: string;
-  iat?: number;
-  exp?: number;
-  sub?: string;
+  scope: string;
+  iss: string;
+  iat: number;
+  exp: number;
+  sub: string;
 }

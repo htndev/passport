@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
-import { Microservice } from '../common/constants';
+import { Microservice } from '../common/constants/microservice.constant';
 
 const OPTIONS = { nullable: true };
 

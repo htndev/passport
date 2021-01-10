@@ -7,7 +7,7 @@ import { CookieModule } from '../common/providers/cookie/cookie.module';
 import { LocationIdentifierModule } from '../common/providers/location-identifier/location-identifier.module';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { LocationService } from './../location/location.service';
+import { LocationService } from '../location/location.service';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
 

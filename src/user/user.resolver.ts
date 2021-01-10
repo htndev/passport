@@ -2,11 +2,12 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { JwtGuard } from './../common/guards/auth/jwt.guard';
-import { Location } from './../entities/location.entity';
-import { User } from './../entities/user.entity';
-import { LocationService } from './../location/location.service';
-import { LocationType } from './../location/location.type';
+import { JwtGuard } from '../common/guards/auth/jwt.guard';
+import { Location } from '../entities/location.entity';
+import { User } from '../entities/user.entity';
+import { LocationService } from '../location/location.service';
+import { LocationType } from '../location/location.type';
+import { Maybe } from '../common/constants/type.constant';
 import { UserSearchInput } from './inputs/user-search.input';
 import { UserService } from './user.service';
 import { UserType } from './user.type';
@@ -34,7 +35,7 @@ export class UserResolver {
   }
 
   @ResolveField(() => LocationType)
-  async location(@Parent() user: User): Promise<Location> {
+  async location(@Parent() user: User): Promise<Maybe<Location>> {
     return this.locationService.getLocationById(user.locationId);
   }
 }

@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
 
-import { UserAvatar } from './../entities/user-avatar.entity';
+import { Avatar } from '../entities/avatar.entity';
 
-@EntityRepository(UserAvatar)
-export class UserAvatarRepository extends Repository<UserAvatar> {
+@EntityRepository(Avatar)
+export class AvatarRepository extends Repository<Avatar> {
   // async uploadAvatar(userId: number, url: string): Promise<void> {}
 }

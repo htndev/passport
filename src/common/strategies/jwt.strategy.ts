@@ -5,7 +5,8 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { User } from '../../entities/user.entity';
 import { UserRepository } from '../../repositories/user.repository';
-import { Microservice } from '../constants';
+import { Microservice } from '../constants/microservice.constant';
+import { PromisePick } from '../constants/type.constant';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { SecurityConfig } from '../providers/config/security.config';
 
@@ -21,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate({ username, email, scope }: JwtPayload): Promise<Pick<User, 'email' | 'username'>> {
+  async validate({ username, email, scope }: JwtPayload): PromisePick<User, 'email' | 'username'> {
     const user = await this.userRepository.findUserByEmailAndUsername({ username, email });
 
     if (scope !== Microservice.PASSPORT) {

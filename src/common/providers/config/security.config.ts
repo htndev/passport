@@ -1,6 +1,6 @@
+import { Microservice } from '../../constants/microservice.constant';
 import * as Joi from 'joi';
 
-import { Microservice } from './../../constants';
 import { BaseConfig } from './base.config';
 
 interface SecurityConfigProps {

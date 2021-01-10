@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { buildFieldLabels } from 'src/common/utils/build-field-labels.util';
 import { EntityRepository, Repository } from 'typeorm';
 
-import { LocationInfo, Nullable } from '../common/types';
+import { LocationInfo, Maybe } from '../common/constants/type.constant';
+import { buildFieldLabels } from '../common/utils/build-field-labels.util';
 import { isNil } from '../common/utils/object.util';
 import { Location } from '../entities/location.entity';
-import { LocationFilterInput } from './../location/inputs/location-filter.input';
+import { LocationFilterInput } from '../location/inputs/location-filter.input';
+import { LocationSearchInput } from '../location/inputs/location-search.input';
 
 type AllowedFields = keyof (LocationInfo & { id: number });
 
@@ -15,7 +16,7 @@ export class LocationRepository extends Repository<Location> {
   readonly #label = 'location';
 
   async findLocation(
-    { city, code, country, region }: LocationInfo = {},
+    { city, code, country, region }: LocationSearchInput = {},
     { skip, limit }: LocationFilterInput = { skip: 0 }
   ): Promise<Location[]> {
     if (!isNil(limit) && limit <= 0) {
@@ -23,7 +24,7 @@ export class LocationRepository extends Repository<Location> {
     }
 
     const query = this.createQueryBuilder(this.#label).select(
-      buildFieldLabels<AllowedFields>(this.#label, ['id', 'city', 'code', 'country', 'region'])
+      buildFieldLabels(this.#label, ['id', 'city', 'code', 'country', 'region'])
     );
 
     if (city) {
@@ -72,7 +73,7 @@ export class LocationRepository extends Repository<Location> {
     return newLocation;
   }
 
-  async findLocationById(id: number): Promise<Nullable<Location>> {
+  async findLocationById(id: number): Promise<Maybe<Location>> {
     return this.createQueryBuilder(this.#label)
       .select(buildFieldLabels(this.#label, ['id', 'country', 'code', 'region', 'city']))
       .where('id = :id', { id })

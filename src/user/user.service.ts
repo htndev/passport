@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { User } from './../entities/user.entity';
-import { UserRepository } from './../repositories/user.repository';
+import { User } from '../entities/user.entity';
+import { UserRepository } from '../repositories/user.repository';
 import { UserSearchInput } from './inputs/user-search.input';
 import { UserType } from './user.type';
 

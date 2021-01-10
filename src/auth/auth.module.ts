@@ -8,9 +8,9 @@ import { LocationIdentifierModule } from '../common/providers/location-identifie
 import { JwtStrategy } from '../common/strategies/jwt.strategy';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { RedisWrapperModule } from './../common/providers/redis-wrapper/redis-wrapper.module';
-import { TokenModule } from './../common/providers/token/token.module';
-import { UuidModule } from './../common/providers/uuid/uuid.module';
+import { RedisWrapperModule } from '../common/providers/redis-wrapper/redis-wrapper.module';
+import { TokenModule } from '../common/providers/token/token.module';
+import { UuidModule } from '../common/providers/uuid/uuid.module';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 

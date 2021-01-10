@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { EnhancedBaseEntity } from './base.entity';
+import { EnhancedBaseEntity } from './enhanced-base.entity';
 
 @Entity({ name: 'user_email_confirmation' })
 export class UserEmailConfirmation extends EnhancedBaseEntity {

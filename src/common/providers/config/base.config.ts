@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as Joi from 'joi';
 
-import { NodeEnv } from './../../constants';
+import { NodeEnv } from '../../constants/env.constant';
 
 enum LogLevel {
   DEBUG = 'debug',
@@ -13,12 +13,12 @@ enum LogLevel {
 
 interface BaseConfigProps {
   NODE_ENV: string;
-  LOG_LEVEL: string;
+  LOG_LEVEL: LogLevel;
 }
 
 @Injectable()
 export abstract class BaseConfig<T = any> {
-  protected readonly config: Partial<T> = {};
+  protected readonly _config: Partial<T> = {};
 
   constructor() {
     const schema = this.getSchema().append({
@@ -28,7 +28,7 @@ export abstract class BaseConfig<T = any> {
         .default(LogLevel.ERROR)
     });
 
-    this.config = BaseConfig.validateConfig(process.env, schema);
+    this._config = BaseConfig.validateConfig(process.env, schema);
   }
 
   abstract getSchema(): Joi.ObjectSchema;
@@ -45,6 +45,10 @@ export abstract class BaseConfig<T = any> {
     }
 
     return value;
+  }
+
+  get config(): T {
+    return this._config as T;
   }
 
   get isDevMode(): boolean {

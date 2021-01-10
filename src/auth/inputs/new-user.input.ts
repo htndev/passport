@@ -1,7 +1,6 @@
+import { passwordRegexp, usernameRegexp } from '../../common/constants/regexp.constant';
 import { Field, InputType } from '@nestjs/graphql';
 import { IsEmail, IsIP, IsLowercase, IsNotEmpty, Matches } from 'class-validator';
-
-import { passwordRegexp, usernameRegexp } from '../../common/regexp';
 
 @InputType({ description: 'Fields for new user' })
 export class NewUserInput {

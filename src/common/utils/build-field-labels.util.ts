@@ -1,3 +1,2 @@
-export const buildFieldLabels = <T = any>(label: string, fields: T[]): T[] => {
-  return fields.reduce((acc, field) => [...acc, `${label}.${field}`], []);
-};
+export const buildFieldLabels = <T extends any[]>(label: string, fields: T): T =>
+  fields.reduce((acc, field) => [...acc, `${label}.${field}`], []);

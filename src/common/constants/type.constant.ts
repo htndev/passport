@@ -1,18 +1,19 @@
 import { CookieOptions } from 'express';
 
-import { User as UserEntity } from '../entities/user.entity';
-import { Microservice, REFRESH_TOKEN } from './constants';
-import { BaseUserJwtPayload } from './interfaces/jwt-payload.interface';
+import { User as UserEntity } from '../../entities/user.entity';
+import { BaseUserJwtPayload } from '../interfaces/jwt-payload.interface';
+import { Microservice } from './microservice.constant';
+import { REFRESH_TOKEN } from './token.constant';
 
 export type Cookies = Record<Microservice, string>;
 
 export type TokenType = Microservice | typeof REFRESH_TOKEN;
 
 export interface LocationInfo {
-  readonly country?: string;
-  readonly code?: string;
-  readonly region?: string;
-  readonly city?: string;
+  readonly country: string;
+  readonly code: string;
+  readonly region: string;
+  readonly city: string;
 }
 
 export interface UserJwtPayload extends BaseUserJwtPayload {
@@ -32,6 +33,8 @@ export type MicroserviceTokens = { tokens: Required<MicroserviceToken> };
 export type Tokens = MicroserviceToken & { [REFRESH_TOKEN]?: string };
 
 export type Nullable<T> = T | null;
+
+export type Maybe<T> = T | undefined;
 
 export type AllowedUserFields = keyof Pick<UserEntity, 'email' | 'username' | 'id' | 'locationId' | 'password'>;
 

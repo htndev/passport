@@ -6,7 +6,7 @@ import { RedisModule } from 'nestjs-redis';
 
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
-import { NodeEnv } from './common/constants';
+import { NodeEnv } from './common/constants/env.constant';
 import { RequestLoggerMiddleware } from './common/middlewares/request-logger.middleware';
 import { AppConfig } from './common/providers/config/app.config';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';

@@ -1,8 +1,9 @@
 import { CanActivate, ConflictException, ExecutionContext, Inject } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
-import { ErrorMessage, UUID } from '../../../common/constants';
-import { REFRESH_TOKEN } from '../../constants';
+import { UUID } from '../../constants/common.constant';
+import { ErrorMessage } from '../../constants/error.constant';
+import { REFRESH_TOKEN } from '../../constants/token.constant';
 import { CookieService } from '../../providers/cookie/cookie.service';
 import { RedisWrapperService } from '../../providers/redis-wrapper/redis-wrapper.service';
 import { getBindContext } from '../../utils/cookie-context-binder.util';

@@ -1,7 +1,7 @@
 import { BadRequestException, HttpService, Injectable } from '@nestjs/common';
 import { retry } from 'rxjs/operators';
 
-import { LocationInfo } from '../../types';
+import { LocationInfo } from '../../constants/type.constant';
 
 enum LocationServiceResponseStatuses {
   SUCCESS = 'success',

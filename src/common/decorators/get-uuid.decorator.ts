@@ -2,7 +2,7 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 
-import { UUID } from './../constants';
+import { UUID } from '../constants/common.constant';
 
 export const GetUuid = createParamDecorator((_: unknown, ctx: ExecutionContext) => {
   const context = GqlExecutionContext.create(ctx).getContext();

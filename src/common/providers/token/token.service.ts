@@ -1,12 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { reduceAsync } from 'src/common/utils/async-iterators.util';
 
-import { Microservice, MICROSERVICES } from '../../../common/constants';
+import { Microservice, MICROSERVICES } from '../../constants/microservice.constant';
+import { MicroserviceToken } from '../../constants/type.constant';
 import { BaseUserJwtPayload, JwtPayload } from '../../interfaces/jwt-payload.interface';
 import { SecurityConfig } from '../../providers/config/security.config';
-import { MicroserviceToken } from '../../types';
-import { RedisWrapperService } from './../redis-wrapper/redis-wrapper.service';
+import { reduceAsync } from '../../utils/async-iterators.util';
 
 @Injectable()
 export class TokenService {
@@ -14,8 +13,7 @@ export class TokenService {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly securityConfig: SecurityConfig,
-    private readonly redisWrapperService: RedisWrapperService
+    private readonly securityConfig: SecurityConfig
   ) {}
 
   async generateTokens(user: BaseUserJwtPayload): Promise<Required<MicroserviceToken>> {

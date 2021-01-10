@@ -2,7 +2,7 @@ import { UseGuards } from '@nestjs/common';
 import { Query, Resolver } from '@nestjs/graphql';
 
 import { HasUuidGuard } from '../common/guards/token/has-uuid.guard';
-import { GetUuid } from './../common/decorators/get-uuid.decorator';
+import { GetUuid } from '../common/decorators/get-uuid.decorator';
 import { TokenType } from './token.type';
 import { TokensService } from './tokens.service';
 

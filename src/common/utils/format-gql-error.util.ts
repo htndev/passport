@@ -5,7 +5,7 @@ export const formatGqlError = (isDevMode: boolean) => (error: GraphQLError): Gra
     return error;
   }
 
-  delete error.extensions.exception.stacktrace;
+  delete error.extensions?.exception.stacktrace;
 
   return error;
 };

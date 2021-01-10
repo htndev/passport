@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedExceptio
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 
-import { REFRESH_TOKEN } from '../../constants';
+import { REFRESH_TOKEN } from '../../constants/token.constant';
 import { CookieService } from '../../providers/cookie/cookie.service';
 import { RedisWrapperService } from '../../providers/redis-wrapper/redis-wrapper.service';
 

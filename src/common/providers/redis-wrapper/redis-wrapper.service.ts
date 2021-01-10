@@ -3,10 +3,11 @@ import { KeyType, Ok, Redis, ValueType } from 'ioredis';
 import { isEmpty } from 'lodash';
 import { RedisService } from 'nestjs-redis';
 
-import { MicroserviceToken, Nullable, TokenType } from '../../types';
+import { MICROSERVICES } from '../../constants/microservice.constant';
+import { TOKEN_PREFIX } from '../../constants/token.constant';
+import { MicroserviceToken, Nullable, TokenType } from '../../constants/type.constant';
 import { mapAsync } from '../../utils/async-iterators.util';
-import { MICROSERVICES, TOKEN_PREFIX } from './../../constants';
-import { RedisConfig } from './../config/redis.config';
+import { RedisConfig } from '../config/redis.config';
 
 type SetOptions = {
   expiryMode?: 'EX' | 'PX';
@@ -39,6 +40,8 @@ export class RedisWrapperService {
       return client.set(key, value, options.expiryMode, options.time);
     } else if (options.expiryMode) {
       return client.set(key, value, options.expiryMode);
+    } else {
+      return null;
     }
   }
 
@@ -48,7 +51,7 @@ export class RedisWrapperService {
     return client.hset(key, value);
   }
 
-  async hget(key: KeyType, field: string): Promise<string> {
+  async hget(key: KeyType, field: string): Promise<Nullable<string>> {
     const client = await this.getClient();
 
     return client.hget(key, field);

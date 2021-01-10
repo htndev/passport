@@ -1,14 +1,14 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
-import { buildFieldLabels } from 'src/common/utils/build-field-labels.util';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { NewUserInput } from '../auth/inputs/new-user.input';
-import { ErrorMessage } from '../common/constants';
-import { AllowedUserFields, PromisePick } from '../common/types';
+import { SignInUserInput } from '../auth/inputs/sign-in-user.input';
+import { ErrorMessage } from '../common/constants/error.constant';
+import { AllowedUserFields } from '../common/constants/type.constant';
+import { buildFieldLabels } from '../common/utils/build-field-labels.util';
 import { Location } from '../entities/location.entity';
 import { User } from '../entities/user.entity';
-import { SignInUserInput } from './../auth/inputs/sign-in-user.input';
 
 @Injectable()
 @EntityRepository(User)
@@ -33,14 +33,14 @@ export class UserRepository extends Repository<User> {
     return user.save();
   }
 
-  async findUserByEmail(email: string): PromisePick<User, 'email'> {
+  async findUserByEmail(email: string): Promise<Pick<User, "email"> | undefined> {
     const query = this.createQueryBuilder(this.#label)
       .select(['user.email'])
       .where('email = :email', { email });
     return query.getOne();
   }
 
-  async findUserByUsername<T extends string[]>(username: string, fields?: T): Promise<User> {
+  async findUserByUsername<T extends string[]>(username: string, fields?: T): Promise<User | undefined> {
     const query = this.createQueryBuilder(this.#label)
       .select(buildFieldLabels(this.#label, fields ?? ['username']))
       .where('username = :username', { username });
@@ -53,10 +53,10 @@ export class UserRepository extends Repository<User> {
   }: {
     email: string;
     username: string;
-  }): PromisePick<User, 'email' | 'username' | 'id'> {
+  }): Promise<Pick<User, "email" | "username" | "id"> | undefined> {
     const query = this.createQueryBuilder(this.#label)
       .select(
-        buildFieldLabels<AllowedUserFields>(this.#label, ['id', 'username', 'email'])
+        buildFieldLabels(this.#label, ['id', 'username', 'email'])
       )
       .where('username = :username', { username })
       .andWhere('email = :email', { email });
@@ -91,9 +91,9 @@ export class UserRepository extends Repository<User> {
     };
   }
 
-  async getUser(fields: Record<string, any>): PromisePick<User, 'username' | 'id' | 'email' | 'locationId'> {
+  async getUser(fields: Record<string, any>): Promise<Pick<User, "email" | "username" | "id" | "locationId"> | undefined> {
     return this.createQueryBuilder(this.#label)
-      .select(buildFieldLabels<AllowedUserFields>(this.#label, this.#defaultReturnFields))
+      .select(buildFieldLabels(this.#label, this.#defaultReturnFields))
       .where('username = :username', { username: fields.username })
       .getOne();
   }
@@ -102,7 +102,7 @@ export class UserRepository extends Repository<User> {
     filters: Record<string, any>,
     fields: AllowedUserFields[] = this.#defaultReturnFields
   ): Promise<User[]> {
-    const _fields = buildFieldLabels<AllowedUserFields>(this.#label, fields);
+    const _fields = buildFieldLabels(this.#label, fields);
     const query = this.createQueryBuilder(this.#label);
     return query
       .select(_fields)
@@ -119,12 +119,12 @@ export class UserRepository extends Repository<User> {
 
   private async getUserCredentials({
     email
-  }): PromisePick<User, 'username' | 'email' | 'password' | 'comparePasswords'> {
+  }): Promise<Pick<User, "email" | "username" | "password" | "comparePasswords"> | undefined> {
     const query = this.createQueryBuilder(this.#label);
 
     return query
       .select(
-        buildFieldLabels<AllowedUserFields>(this.#label, ['username', 'email', 'password'])
+        buildFieldLabels(this.#label, ['username', 'email', 'password'])
       )
       .where('email = :email', { email })
       .getOne();

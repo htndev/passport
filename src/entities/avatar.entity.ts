@@ -1,16 +1,16 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { EnhancedBaseEntity } from './base.entity';
+import { EnhancedBaseEntity } from './enhanced-base.entity';
 import { User } from './user.entity';
 
-@Entity({ name: 'user_avatars' })
-export class UserAvatar extends EnhancedBaseEntity {
+@Entity({ name: 'avatars' })
+export class Avatar extends EnhancedBaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @OneToOne(() => User, (user) => user.avatar, { eager: false })
   @Column({
-    type: 'varchar'
+    type: 'int'
   })
   owner: number;
 
@@ -18,10 +18,4 @@ export class UserAvatar extends EnhancedBaseEntity {
     type: 'varchar'
   })
   avatar: string;
-
-  @Column({
-    type: 'boolean',
-    default: true
-  })
-  isActive: boolean;
 }

@@ -85,13 +85,10 @@
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.4"
   },
-  "lint-staged": {
-    "*.{js,vue}": "prettier"
-  },
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run lint"
     }
   },
   "jest": {
