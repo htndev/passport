@@ -11,10 +11,7 @@ import { reduceAsync } from '../../utils/async-iterators.util';
 export class TokenService {
   readonly #logger = new Logger('Token Service');
 
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly securityConfig: SecurityConfig
-  ) {}
+  constructor(private readonly jwtService: JwtService, private readonly securityConfig: SecurityConfig) {}
 
   async generateTokens(user: BaseUserJwtPayload): Promise<Required<MicroserviceToken>> {
     this.#logger.verbose(`Generating tokens for ${user.email}`);

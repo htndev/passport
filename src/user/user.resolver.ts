@@ -8,7 +8,7 @@ import { Location } from '../entities/location.entity';
 import { User } from '../entities/user.entity';
 import { LocationService } from '../location/location.service';
 import { LocationType } from '../location/location.type';
-import { StatusType } from './../common/types/status.type';
+import { StatusType } from '../common/types/status.type';
 import { UserSearchInput } from './inputs/user-search.input';
 import { UserService } from './user.service';
 import { UserType } from './user.type';
@@ -19,7 +19,10 @@ export class UserResolver {
   constructor(private readonly userService: UserService, private readonly locationService: LocationService) {}
 
   @Mutation(() => StatusType)
-  async updateAvatar(@Args('avatar', { nullable: false }) avatar: string, @CurrentUser() user: UserType): Promise<StatusType> {
+  async updateAvatar(
+    @Args('avatar', { nullable: false }) avatar: string,
+    @CurrentUser() user: UserType
+  ): Promise<StatusType> {
     return this.userService.updateUserAvatar(avatar, user);
   }
 

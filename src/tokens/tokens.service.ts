@@ -26,7 +26,7 @@ export class TokensService {
   }
 
   async generateTokens(uuid: string): Promise<Required<MicroserviceToken>> {
-    const refreshToken = await this.redisWrapperService.getToken(uuid, REFRESH_TOKEN) as string;
+    const refreshToken = (await this.redisWrapperService.getToken(uuid, REFRESH_TOKEN)) as string;
 
     const { username, email } = await this.tokenService.parseToken(
       refreshToken,

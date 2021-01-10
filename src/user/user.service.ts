@@ -9,12 +9,16 @@ import { UserType } from './user.type';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(UserRepository) private readonly userRepository: UserRepository
-  ) {}
+  constructor(@InjectRepository(UserRepository) private readonly userRepository: UserRepository) {}
 
   async getUser(username: string): Promise<User> {
-    const user = await this.userRepository.findUserByUsername(username, ['id', 'username', 'email', 'locationId', 'avatar']);
+    const user = await this.userRepository.findUserByUsername(username, [
+      'id',
+      'username',
+      'email',
+      'locationId',
+      'avatar'
+    ]);
 
     if (!user) {
       throw new NotFoundException(`User ${username} not found`);
