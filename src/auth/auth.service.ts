@@ -2,20 +2,21 @@ import { ConflictException, HttpStatus, Injectable, Logger } from '@nestjs/commo
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UUID } from '../common/constants/common.constant';
+import { Microservice } from '../common/constants/microservice.constant';
+import { REFRESH_TOKEN, TOKENS } from '../common/constants/token.constant';
 import { CookieSetterFunction, MicroserviceToken, TokenType } from '../common/constants/type.constant';
 import { BaseUserJwtPayload } from '../common/interfaces/jwt-payload.interface';
 import { SecurityConfig } from '../common/providers/config/security.config';
 import { CookieService } from '../common/providers/cookie/cookie.service';
 import { DateService } from '../common/providers/date/date.service';
 import { LocationIdentifierService } from '../common/providers/location-identifier/location-identifier.service';
+import { RedisWrapperService } from '../common/providers/redis-wrapper/redis-wrapper.service';
 import { TokenService } from '../common/providers/token/token.service';
+import { UuidService } from '../common/providers/uuid/uuid.service';
+import { IsAuthorizedType } from '../common/types/is-authorized.type';
+import { StatusType } from '../common/types/status.type';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { Microservice } from '../common/constants/microservice.constant';
-import { REFRESH_TOKEN, TOKENS } from '../common/constants/token.constant';
-import { RedisWrapperService } from '../common/providers/redis-wrapper/redis-wrapper.service';
-import { UuidService } from '../common/providers/uuid/uuid.service';
-import { StatusType } from '../common/types/status.type';
 import { NewUserInput } from './inputs/new-user.input';
 import { SignInUserInput } from './inputs/sign-in-user.input';
 
@@ -84,6 +85,12 @@ export class AuthService {
     this.#logger.verbose(`User ${user.email} successfully signed in`);
 
     return { status: HttpStatus.OK };
+  }
+
+  isAuthorized(uuid: string): IsAuthorizedType {
+    return {
+      isAuthorized: typeof uuid === 'string'
+    };
   }
 
   async logout(uuid: string, cookieSetter: CookieSetterFunction): Promise<StatusType> {

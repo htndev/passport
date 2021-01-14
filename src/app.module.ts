@@ -53,15 +53,18 @@ import { UserModule } from './user/user.module';
     GraphQLModule.forRootAsync({
       imports: [ConfigManagerModule],
       inject: [AppConfig],
-      useFactory: ({ isDevMode }: AppConfig) => ({
+      useFactory: ({ isDevMode, allowedDomains }: AppConfig) => ({
         autoSchemaFile: true,
-        playground: isDevMode
-          ? {
-              settings: {
-                'request.credentials': 'include'
-              }
-            }
-          : false,
+        cors: {
+          credentials: true,
+          origin: allowedDomains
+        },
+        playground: {
+          settings: {
+            'request.credentials': 'same-origin',
+            'schema.polling.interval': 200000
+          }
+        },
         useGlobalPrefix: true,
         context: ({ req, res }: any): any => ({ req, res }),
         formatError: formatGqlError(isDevMode)

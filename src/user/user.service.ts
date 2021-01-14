@@ -1,9 +1,11 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { StatusType } from '../common/types/status.type';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
+import { ExistsType } from '../common/types/exists.type';
+import { ExistsUserInput } from './inputs/exists-user.input';
 import { UserSearchInput } from './inputs/user-search.input';
 import { UserType } from './user.type';
 
@@ -49,6 +51,24 @@ export class UserService {
     return {
       status: HttpStatus.ACCEPTED,
       message: 'Avatar updated successfully'
+    };
+  }
+
+  async userExists({ email, username }: ExistsUserInput): Promise<ExistsType> {
+    let user: any;
+
+    if (email && username) {
+      user = await this.userRepository.findUserByEmailAndUsername({ email, username });
+    } else if (email) {
+      user = await this.userRepository.findUserByEmail(email);
+    } else if (username) {
+      user = await this.userRepository.findUserByUsername(username);
+    } else {
+      throw new BadRequestException('Username or email should be provided or not be empty');
+    }
+
+    return {
+      exists: user !== undefined
     };
   }
 }
