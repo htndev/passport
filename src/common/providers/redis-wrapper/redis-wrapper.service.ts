@@ -8,6 +8,9 @@ import { TOKEN_PREFIX } from '../../constants/token.constant';
 import { MicroserviceToken, Nullable, TokenType } from '../../constants/type.constant';
 import { mapAsync } from '../../utils/async-iterators.util';
 import { RedisConfig } from '../config/redis.config';
+import { RESET } from '../../constants/common.constant';
+import { WEEK } from '../../constants/time.constant';
+import { isNil } from '../../utils/object.util';
 
 type SetOptions = {
   expiryMode?: 'EX' | 'PX';
@@ -106,6 +109,23 @@ export class RedisWrapperService {
 
   async deleteToken(uuid: string, tokenType: TokenType): Promise<boolean> {
     return this.del(this.formatKey(uuid, tokenType));
+  }
+
+  async setResetToken(uuid: string, userId: number): Promise<boolean> {
+    const isSet = await this.set(`${RESET}${this.redisConfig.redisSeparator}${uuid}`, userId, {
+      expiryMode: 'EX',
+      time: WEEK
+    });
+
+    return !isNil(isSet);
+  }
+
+  async delResetToken(uuid: string): Promise<boolean> {
+    return this.del(`${RESET}${this.redisConfig.redisSeparator}${uuid}`);
+  }
+
+  async getResetToken(uuid: string): Promise<Nullable<string>> {
+    return this.get(`${RESET}${this.redisConfig.redisSeparator}${uuid}`);
   }
 
   private formatKey = (uuid: string, tokenType: TokenType): string =>

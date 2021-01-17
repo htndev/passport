@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { genSalt, hash } from 'bcrypt';
 import { EntityRepository, Repository } from 'typeorm';
 
@@ -33,9 +33,9 @@ export class UserRepository extends Repository<User> {
     return user.save();
   }
 
-  async findUserByEmail(email: string): Promise<Pick<User, 'email'> | undefined> {
+  async findUserByEmail<T extends AllowedUserFields>(email: string, fields?: T[]): Promise<Pick<User, T> | undefined> {
     const query = this.createQueryBuilder(this.#label)
-      .select(['user.email'])
+      .select(buildFieldLabels(this.#label, fields ?? ['email']))
       .where('email = :email', { email });
     return query.getOne();
   }
@@ -67,6 +67,24 @@ export class UserRepository extends Repository<User> {
       .select(buildFieldLabels(this.#label, ['id', 'username', 'email', 'avatar']))
       .where('id = :id', { id })
       .getOne();
+  }
+
+  async updatePassword(id: number, password: string): Promise<void> {
+    const user = await this.findOne({ id });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (await user.comparePasswords(password)) {
+      throw new BadRequestException('New password should be different from the current password');
+    }
+
+    const { password: newPassword } = await this.hashPassword(password);
+
+    user.password = newPassword;
+
+    await user.save();
   }
 
   private async hashPassword(password: string): Promise<{ password: string }> {

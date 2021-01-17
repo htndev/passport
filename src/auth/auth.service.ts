@@ -1,4 +1,4 @@
-import { ConflictException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UUID } from '../common/constants/common.constant';
@@ -13,12 +13,14 @@ import { LocationIdentifierService } from '../common/providers/location-identifi
 import { RedisWrapperService } from '../common/providers/redis-wrapper/redis-wrapper.service';
 import { TokenService } from '../common/providers/token/token.service';
 import { UuidService } from '../common/providers/uuid/uuid.service';
-import { IsAuthorizedType } from '../common/types/is-authorized.type';
 import { StatusType } from '../common/types/status.type';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
+import { ExistsType } from '../common/types/exists.type';
 import { NewUserInput } from './inputs/new-user.input';
+import { ResetPasswordInput } from './inputs/reset-password.input';
 import { SignInUserInput } from './inputs/sign-in-user.input';
+import { IsAuthorizedType } from './types/is-authorized.type';
 
 @Injectable()
 export class AuthService {
@@ -90,6 +92,67 @@ export class AuthService {
   isAuthorized(uuid: string): IsAuthorizedType {
     return {
       isAuthorized: typeof uuid === 'string'
+    };
+  }
+
+  async generatePasswordResetToken(email: string): Promise<StatusType> {
+    if (!email) {
+      throw new BadRequestException('Email should be provided');
+    }
+    const user = await this.userRepository.findUserByEmail(email, ['id', 'email', 'username']);
+
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+
+    const restorePasswordId = await this.uuidService.registerUuid();
+
+    await this.redisWrapperService.setResetToken(restorePasswordId, user.id);
+
+    // TODO: send letter to mailer
+
+    return {
+      status: HttpStatus.CREATED,
+      message: 'Reset link sent to your email'
+    };
+  }
+
+  async isTokenExists(token: string): Promise<ExistsType> {
+    if (!token) {
+      throw new BadRequestException('Token is not provided');
+    }
+
+    const _token = await this.redisWrapperService.getResetToken(token);
+
+    return {
+      exists: !!_token
+    };
+  }
+
+  async resetPassword({ password, passwordConfirmation, token }: ResetPasswordInput): Promise<StatusType> {
+    if (password !== passwordConfirmation) {
+      throw new BadRequestException('Password and password confirmation are not equal');
+    }
+
+    const { exists } = await this.isTokenExists(token);
+
+    if (!exists) {
+      throw new NotFoundException('Token not found. Not registered or expired');
+    }
+
+    const userId = await this.redisWrapperService.getResetToken(token);
+
+    if (!userId) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.userRepository.updatePassword(+userId, password);
+
+    await this.redisWrapperService.delResetToken(token);
+
+    return {
+      status: HttpStatus.ACCEPTED,
+      message: 'Password successfully updated'
     };
   }
 

@@ -8,7 +8,7 @@ import { CookieService } from '../../providers/cookie/cookie.service';
 import { RedisWrapperService } from '../../providers/redis-wrapper/redis-wrapper.service';
 import { getBindContext } from '../../utils/cookie-context-binder.util';
 
-export class NotAuthorizedUser implements CanActivate {
+export class NotAuthorizedUserGuard implements CanActivate {
   constructor(
     @Inject('CookieService') private readonly cookieService: CookieService,
     @Inject('RedisWrapperService') private readonly redisWrapperService: RedisWrapperService
