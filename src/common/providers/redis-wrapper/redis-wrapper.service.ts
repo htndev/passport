@@ -3,14 +3,13 @@ import { KeyType, Ok, Redis, ValueType } from 'ioredis';
 import { isEmpty } from 'lodash';
 import { RedisService } from 'nestjs-redis';
 
+import { RESET } from '../../constants/common.constant';
 import { MICROSERVICES } from '../../constants/microservice.constant';
 import { TOKEN_PREFIX } from '../../constants/token.constant';
 import { MicroserviceToken, Nullable, TokenType } from '../../constants/type.constant';
 import { mapAsync } from '../../utils/async-iterators.util';
-import { RedisConfig } from '../config/redis.config';
-import { RESET } from '../../constants/common.constant';
-import { WEEK } from '../../constants/time.constant';
 import { isNil } from '../../utils/object.util';
+import { RedisConfig } from '../config/redis.config';
 
 type SetOptions = {
   expiryMode?: 'EX' | 'PX';
@@ -111,21 +110,18 @@ export class RedisWrapperService {
     return this.del(this.formatKey(uuid, tokenType));
   }
 
-  async setResetToken(uuid: string, userId: number): Promise<boolean> {
-    const isSet = await this.set(`${RESET}${this.redisConfig.redisSeparator}${uuid}`, userId, {
-      expiryMode: 'EX',
-      time: WEEK
-    });
+  async setSpecialToken(type: string, uuid: string, data: number | string, opts?: SetOptions): Promise<boolean> {
+    const isSet = await this.set(`${type}${this.redisConfig.redisSeparator}${uuid}`, data, opts);
 
     return !isNil(isSet);
   }
 
-  async delResetToken(uuid: string): Promise<boolean> {
-    return this.del(`${RESET}${this.redisConfig.redisSeparator}${uuid}`);
+  async delSpecialToken(type: string, uuid: string): Promise<boolean> {
+    return this.del(`${type}${this.redisConfig.redisSeparator}${uuid}`);
   }
 
-  async getResetToken(uuid: string): Promise<Nullable<string>> {
-    return this.get(`${RESET}${this.redisConfig.redisSeparator}${uuid}`);
+  async getSpecialToken(type: string, uuid: string): Promise<Nullable<string>> {
+    return this.get(`${type}${this.redisConfig.redisSeparator}${uuid}`);
   }
 
   private formatKey = (uuid: string, tokenType: TokenType): string =>

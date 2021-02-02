@@ -1,5 +1,6 @@
+import { Email } from './email.entity';
 import { compare } from 'bcrypt';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { EnhancedBaseEntity } from './enhanced-base.entity';
 import { Location } from './location.entity';
@@ -14,6 +15,7 @@ export class User extends EnhancedBaseEntity {
     length: 150,
     unique: true
   })
+  @Index()
   email: string;
 
   @Column({
@@ -21,6 +23,7 @@ export class User extends EnhancedBaseEntity {
     type: 'varchar',
     length: 26
   })
+  @Index()
   username: string;
 
   @Column({
@@ -41,6 +44,15 @@ export class User extends EnhancedBaseEntity {
 
   @Column()
   locationId: number;
+
+  @Column({
+    type: 'boolean',
+    default: false
+  })
+  isEmailConfirmed: boolean;
+
+  @OneToMany(() => Email, (email) => email.user)
+  emails: Email[];
 
   async comparePasswords(password: string): Promise<boolean> {
     return compare(password, this.password);

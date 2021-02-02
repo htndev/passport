@@ -36,6 +36,6 @@ export type Nullable<T> = T | null;
 
 export type Maybe<T> = T | undefined;
 
-export type AllowedUserFields = keyof Pick<UserEntity, 'email' | 'username' | 'id' | 'locationId' | 'password'>;
+export type AllowedUserFields = keyof Pick<UserEntity, 'email' | 'username' | 'id' | 'locationId' | 'password' | 'isEmailConfirmed'>;
 
 export type CookieSetterFunction = (name: string, value: string | number, options: CookieOptions) => void;

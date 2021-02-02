@@ -6,12 +6,15 @@ import { CookieSetter } from '../common/decorators/cookie-setter.decorator';
 import { GetUuid } from '../common/decorators/get-uuid.decorator';
 import { NotAuthorizedUserGuard } from '../common/guards/auth/not-authorized-user.guard';
 import { HasUuidGuard } from '../common/guards/token/has-uuid.guard';
-import { StatusType } from '../common/types/status.type';
 import { ExistsType } from '../common/types/exists.type';
+import { StatusType } from '../common/types/status.type';
 import { AuthService } from './auth.service';
 import { NewUserInput } from './inputs/new-user.input';
+import { RequestResetPasswordInput } from './inputs/request-reset-password.input';
+import { ResendConfirmationEmailInput } from './inputs/resend-confirmation-email.input';
 import { ResetPasswordInput } from './inputs/reset-password.input';
 import { SignInUserInput } from './inputs/sign-in-user.input';
+import { EmailConfirmedType } from './types/email-confirmed.type';
 import { IsAuthorizedType } from './types/is-authorized.type';
 
 @Resolver(() => StatusType)
@@ -20,11 +23,18 @@ export class AuthResolver {
 
   @UseGuards(NotAuthorizedUserGuard)
   @Mutation(() => StatusType)
-  async signUp(
-    @Args('user') user: NewUserInput,
-    @CookieSetter() cookieSetter: CookieSetterFunction
-  ): Promise<StatusType> {
-    return this.authService.signUp(user, cookieSetter);
+  async signUp(@Args('user') user: NewUserInput): Promise<StatusType> {
+    return this.authService.signUp(user);
+  }
+
+  @Mutation(() => StatusType)
+  async resendConfirmationEmail(@Args('to') to: ResendConfirmationEmailInput): Promise<StatusType> {
+    return this.authService.resendConfirmationEmail(to);
+  }
+
+  @Mutation(() => StatusType)
+  async confirmEmail(@Args('token') token: string): Promise<StatusType> {
+    return this.authService.confirmEmail(token);
   }
 
   @UseGuards(NotAuthorizedUserGuard)
@@ -38,8 +48,10 @@ export class AuthResolver {
 
   @UseGuards(NotAuthorizedUserGuard)
   @Mutation(() => StatusType)
-  async generatePasswordResetToken(@Args('email') email: string): Promise<StatusType> {
-    return this.authService.generatePasswordResetToken(email);
+  async generatePasswordResetToken(
+    @Args('resetPasswordInput') resetPasswordInput: RequestResetPasswordInput
+  ): Promise<StatusType> {
+    return this.authService.generatePasswordResetToken(resetPasswordInput);
   }
 
   @UseGuards(HasUuidGuard)
@@ -53,9 +65,14 @@ export class AuthResolver {
     return this.authService.isAuthorized(uuid);
   }
 
+  @Query(() => EmailConfirmedType)
+  async isUserEmailConfirmed(@Args('email') email: string): Promise<EmailConfirmedType> {
+    return this.authService.isUserEmailConfirmed(email);
+  }
+
   @Query(() => ExistsType)
-  async isTokenExists(@Args('token') token: string): Promise<ExistsType> {
-    return this.authService.isTokenExists(token);
+  async isPasswordResetTokenExists(@Args('token') token: string): Promise<ExistsType> {
+    return this.authService.isPasswordResetTokenExists(token);
   }
 
   @Mutation(() => StatusType)

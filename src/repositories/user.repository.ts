@@ -21,7 +21,7 @@ export class UserRepository extends Repository<User> {
     username,
     password,
     location
-  }: Omit<NewUserInput, 'ip'> & { location: Location }): Promise<User> {
+  }: Omit<NewUserInput, 'ip' | 'lang'> & { location: Location }): Promise<User> {
     const user = new User();
     const { password: hashedPassword } = await this.hashPassword(password);
 
@@ -64,7 +64,7 @@ export class UserRepository extends Repository<User> {
 
   async findById(id: number): Promise<User | undefined> {
     return this.createQueryBuilder(this.#label)
-      .select(buildFieldLabels(this.#label, ['id', 'username', 'email', 'avatar']))
+      .select(buildFieldLabels(this.#label, ['id', 'username', 'email', 'avatar', 'isEmailConfirmed']))
       .where('id = :id', { id })
       .getOne();
   }

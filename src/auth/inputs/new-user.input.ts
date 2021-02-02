@@ -24,4 +24,7 @@ export class NewUserInput {
   @IsNotEmpty()
   @IsIP('4')
   ip: string;
+
+  @Field({ nullable: true, defaultValue: 'en' })
+  lang: string;
 }

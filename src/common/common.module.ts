@@ -6,6 +6,7 @@ import { ConfigModule } from '../common/providers/config/config.module';
 import { AppConfig } from './providers/config/app.config';
 import { SecurityConfig } from './providers/config/security.config';
 import { DateService } from './providers/date/date.service';
+import { DynamicRabbitMQModule } from './providers/rabbitmq/rabbitmq.provider';
 
 @Module({
   imports: [
@@ -25,9 +26,10 @@ import { DateService } from './providers/date/date.service';
         signOptions: { expiresIn, issuer, subject: 'auth' }
       })
     }),
-    ConfigModule
+    ConfigModule,
+    DynamicRabbitMQModule
   ],
   providers: [DateService],
-  exports: [PassportModule, JwtModule, ConfigModule, DateService]
+  exports: [PassportModule, JwtModule, ConfigModule, DateService, DynamicRabbitMQModule]
 })
 export class CommonModule {}

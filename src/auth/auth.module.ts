@@ -5,19 +5,20 @@ import { CommonModule } from '../common/common.module';
 import { ConfigModule as ConfigManagerModule } from '../common/providers/config/config.module';
 import { CookieModule } from '../common/providers/cookie/cookie.module';
 import { LocationIdentifierModule } from '../common/providers/location-identifier/location-identifier.module';
-import { JwtStrategy } from '../common/strategies/jwt.strategy';
-import { LocationRepository } from '../repositories/location.repository';
-import { UserRepository } from '../repositories/user.repository';
 import { RedisWrapperModule } from '../common/providers/redis-wrapper/redis-wrapper.module';
 import { TokenModule } from '../common/providers/token/token.module';
 import { UuidModule } from '../common/providers/uuid/uuid.module';
+import { JwtStrategy } from '../common/strategies/jwt.strategy';
+import { LocationRepository } from '../repositories/location.repository';
+import { UserRepository } from '../repositories/user.repository';
+import { EmailRepository } from '../repositories/email.repository';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 
 @Module({
   imports: [
     CommonModule,
-    TypeOrmModule.forFeature([UserRepository, LocationRepository]),
+    TypeOrmModule.forFeature([UserRepository, LocationRepository, EmailRepository]),
     LocationIdentifierModule,
     ConfigManagerModule,
     CookieModule,
