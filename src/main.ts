@@ -6,15 +6,13 @@ import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
 
 import { AppModule } from './app.module';
-import { setupHttps } from './common/dev/https';
 import { setupSwagger } from './common/dev/swagger';
 import { AppConfig } from './common/providers/config/app.config';
 import { SecurityConfig } from './common/providers/config/security.config';
 
 async function bootstrap() {
-  const options = await setupHttps();
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, options);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = app.get(AppConfig);
   const { cookieSecret } = app.get(SecurityConfig);
 
@@ -35,7 +33,7 @@ async function bootstrap() {
   }
 
   if (config.enableSwagger) {
-    setupSwagger(app);
+    setupSwagger(app, config.url);
   }
 
   await app.listen(config.port);

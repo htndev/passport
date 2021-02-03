@@ -2,19 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { CookieOptions } from 'express';
 
 import { UUID } from '../../constants/common.constant';
-import { Microservice } from '../../constants/microservice.constant';
 import { Cookies, CookieSetterFunction, Nullable } from '../../constants/type.constant';
-
-type MicroServiceTokenTuple = [Microservice, string];
+import { AppConfig } from '../config/app.config';
 
 @Injectable()
 export class CookieService {
-  private readonly cookieOptions: CookieOptions = {
-    sameSite: 'none',
-    secure: true,
-    httpOnly: true,
-    signed: true
-  };
+  constructor(private readonly appConfig: AppConfig) {}
+
+  private get cookieOptions(): CookieOptions {
+    return {
+      sameSite: 'lax',
+      httpOnly: true,
+      signed: true,
+      domain: this.appConfig.appHostname,
+      path: '/'
+    };
+  }
 
   setCookie(cookieSetter: CookieSetterFunction, key: string, value: string | number, expires = new Date()): void {
     cookieSetter(key, value, {
