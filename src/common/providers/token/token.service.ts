@@ -21,7 +21,7 @@ export class TokenService {
         ...(await acc),
         ...(await this.generateToken(microservice, user))
       }),
-      {}
+      {} as any
     );
 
     return tokens;

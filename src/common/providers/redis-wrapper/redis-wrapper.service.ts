@@ -47,7 +47,7 @@ export class RedisWrapperService {
     }
   }
 
-  async hset(key: KeyType, value: Map<string, any>): Promise<Ok> {
+  async hset(key: KeyType, value: Map<string, any>): Promise<number> {
     const client = await this.getClient();
 
     return client.hset(key, value);
