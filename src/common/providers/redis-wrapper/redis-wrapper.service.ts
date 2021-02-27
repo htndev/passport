@@ -1,15 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { RedisConfig } from '@xbeat/server-toolkit';
+import { isNil, Nullable } from '@xbeat/toolkit';
 import { KeyType, Ok, Redis, ValueType } from 'ioredis';
 import { isEmpty } from 'lodash';
 import { RedisService } from 'nestjs-redis';
 
-import { RESET } from '../../constants/common.constant';
 import { MICROSERVICES } from '../../constants/microservice.constant';
 import { TOKEN_PREFIX } from '../../constants/token.constant';
-import { MicroserviceToken, Nullable, TokenType } from '../../constants/type.constant';
+import { MicroserviceToken, TokenType } from '../../constants/type.constant';
 import { mapAsync } from '../../utils/async-iterators.util';
-import { isNil } from '../../utils/object.util';
-import { RedisConfig } from '../config/redis.config';
 
 type SetOptions = {
   expiryMode?: 'EX' | 'PX';

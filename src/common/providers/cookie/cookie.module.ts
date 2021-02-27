@@ -1,8 +1,8 @@
 import { Global, Module } from '@nestjs/common';
+import { DateService } from '@xbeat/server-toolkit';
 
 import { CommonModule } from '../../common.module';
 import { ConfigModule } from '../config/config.module';
-import { DateService } from '../date/date.service';
 import { RedisWrapperModule } from '../redis-wrapper/redis-wrapper.module';
 import { RedisWrapperService } from '../redis-wrapper/redis-wrapper.service';
 import { TokenModule } from '../token/token.module';

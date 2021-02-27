@@ -1,8 +1,8 @@
-import { Email } from './email.entity';
+import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { compare } from 'bcrypt';
-import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { EnhancedBaseEntity } from './enhanced-base.entity';
+import { Email } from './email.entity';
 import { Location } from './location.entity';
 
 @Entity({ name: 'users' })

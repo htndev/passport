@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { AppConfig, DateService } from '@xbeat/server-toolkit';
 
 import { ConfigModule } from '../common/providers/config/config.module';
-import { AppConfig } from './providers/config/app.config';
 import { SecurityConfig } from './providers/config/security.config';
-import { DateService } from './providers/date/date.service';
 import { DynamicRabbitMQModule } from './providers/rabbitmq/rabbitmq.provider';
 
 @Module({

@@ -1,13 +1,12 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppConfig, setupSwagger } from '@xbeat/server-toolkit';
 import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
 
 import { AppModule } from './app.module';
-import { setupSwagger } from './common/dev/swagger';
-import { AppConfig } from './common/providers/config/app.config';
 import { SecurityConfig } from './common/providers/config/security.config';
 
 async function bootstrap() {
@@ -16,7 +15,6 @@ async function bootstrap() {
   const config = app.get(AppConfig);
   const { cookieSecret } = app.get(SecurityConfig);
 
-  app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix(config.apiVersion);
   app.enableCors({
     origin: config.allowedDomains,
@@ -33,7 +31,7 @@ async function bootstrap() {
   }
 
   if (config.enableSwagger) {
-    setupSwagger(app, config.url);
+    setupSwagger(app, await import('../package.json'));
   }
 
   await app.listen(config.port);

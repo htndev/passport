@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { AppConfig } from '@xbeat/server-toolkit';
+import { Nullable } from '@xbeat/toolkit';
 import { CookieOptions } from 'express';
 
 import { UUID } from '../../constants/common.constant';
-import { Cookies, CookieSetterFunction, Nullable } from '../../constants/type.constant';
-import { AppConfig } from '../config/app.config';
+import { Cookies, CookieSetterFunction } from '../../constants/type.constant';
 
 @Injectable()
 export class CookieService {

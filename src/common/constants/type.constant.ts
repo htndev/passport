@@ -1,7 +1,6 @@
 import { CookieOptions } from 'express';
 
 import { User as UserEntity } from '../../entities/user.entity';
-import { BaseUserJwtPayload } from '../interfaces/jwt-payload.interface';
 import { Microservice } from './microservice.constant';
 import { REFRESH_TOKEN } from './token.constant';
 
@@ -16,10 +15,6 @@ export interface LocationInfo {
   readonly city: string;
 }
 
-export interface UserJwtPayload extends BaseUserJwtPayload {
-  id: string;
-}
-
 export const DatabaseErrorMessages = {
   [23505]: 'Duplicate'
 };
@@ -32,10 +27,9 @@ export type MicroserviceTokens = { tokens: Required<MicroserviceToken> };
 
 export type Tokens = MicroserviceToken & { [REFRESH_TOKEN]?: string };
 
-export type Nullable<T> = T | null;
-
-export type Maybe<T> = T | undefined;
-
-export type AllowedUserFields = keyof Pick<UserEntity, 'email' | 'username' | 'id' | 'locationId' | 'password' | 'isEmailConfirmed'>;
+export type AllowedUserFields = keyof Pick<
+  UserEntity,
+  'email' | 'username' | 'id' | 'locationId' | 'password' | 'isEmailConfirmed'
+>;
 
 export type CookieSetterFunction = (name: string, value: string | number, options: CookieOptions) => void;

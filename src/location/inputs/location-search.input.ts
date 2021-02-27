@@ -1,18 +1,17 @@
-import { Field, InputType } from '@nestjs/graphql';
-
-const OPTIONS = { nullable: true };
+import { InputType } from '@nestjs/graphql';
+import { OptionalField } from '@xbeat/server-toolkit';
 
 @InputType()
 export class LocationSearchInput {
-  @Field(OPTIONS)
+  @OptionalField()
   country?: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   code?: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   region?: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   city?: string;
 }

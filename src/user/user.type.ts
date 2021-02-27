@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { OptionalField } from '@xbeat/server-toolkit';
 
 @ObjectType('User')
 export class UserType {
@@ -11,6 +12,6 @@ export class UserType {
   @Field()
   username: string;
 
-  @Field({ nullable: true })
+  @OptionalField()
   avatar: string;
 }

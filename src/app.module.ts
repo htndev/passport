@@ -1,18 +1,21 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_PIPE } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
+import {
+  AppConfig,
+  DatabaseConfig,
+  formatGqlError,
+  NodeEnvironment,
+  RedisConfig,
+  RequestLoggerMiddleware
+} from '@xbeat/server-toolkit';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { RedisModule } from 'nestjs-redis';
 
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
-import { NodeEnv } from './common/constants/env.constant';
-import { RequestLoggerMiddleware } from './common/middlewares/request-logger.middleware';
-import { AppConfig } from './common/providers/config/app.config';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
-import { DatabaseConfig } from './common/providers/config/database.config';
-import { RedisConfig } from './common/providers/config/redis.config';
-import { formatGqlError } from './common/utils/format-gql-error.util';
 import { LocationModule } from './location/location.module';
 import { TokensModule } from './tokens/tokens.module';
 import { UserModule } from './user/user.module';
@@ -21,7 +24,7 @@ import { UserModule } from './user/user.module';
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.dev.env',
-      ignoreEnvFile: process.env.NODE_ENV === NodeEnv.PRODUCTION
+      ignoreEnvFile: process.env.NODE_ENV === NodeEnvironment.PRODUCTION
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigManagerModule],
@@ -86,6 +89,12 @@ import { UserModule } from './user/user.module';
     TokensModule,
     UserModule,
     LocationModule
+  ],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe()
+    }
   ]
 })
 export class AppModule implements NestModule {

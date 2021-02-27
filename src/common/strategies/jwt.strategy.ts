@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtPayload } from '@xbeat/server-toolkit';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { User } from '../../entities/user.entity';
 import { UserRepository } from '../../repositories/user.repository';
 import { Microservice } from '../constants/microservice.constant';
 import { PromisePick } from '../constants/type.constant';
-import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { SecurityConfig } from '../providers/config/security.config';
 
 @Injectable()

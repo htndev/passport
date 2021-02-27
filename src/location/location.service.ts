@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Maybe } from '@xbeat/toolkit';
 
-import { Maybe } from '../common/constants/type.constant';
 import { Location } from '../entities/location.entity';
 import { LocationRepository } from '../repositories/location.repository';
 import { LocationFilterInput } from './inputs/location-filter.input';

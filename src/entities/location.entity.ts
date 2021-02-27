@@ -1,6 +1,6 @@
+import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { EnhancedBaseEntity } from './enhanced-base.entity';
 import { User } from './user.entity';
 
 @Entity({ name: 'locations' })

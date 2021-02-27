@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import Joi = require('joi');
-import { BaseConfig } from './base.config';
+import { BaseConfig } from '@xbeat/server-toolkit';
+import * as Joi from 'joi';
 
 interface AmqpConfigProps {
   AMQP_URL: string;
@@ -13,7 +13,7 @@ export class AmqpConfig extends BaseConfig<AmqpConfigProps> {
     mailer: 'mailer'
   };
 
-  getSchema() {
+  getSchema(): Joi.ObjectSchema<AmqpConfigProps> {
     return Joi.object({
       AMQP_URL: Joi.string().required()
     });

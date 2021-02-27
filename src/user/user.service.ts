@@ -1,10 +1,9 @@
 import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ExistsType, StatusType } from '@xbeat/server-toolkit';
 
-import { StatusType } from '../common/types/status.type';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
-import { ExistsType } from '../common/types/exists.type';
 import { ExistsUserInput } from './inputs/exists-user.input';
 import { UserSearchInput } from './inputs/user-search.input';
 import { UserType } from './user.type';

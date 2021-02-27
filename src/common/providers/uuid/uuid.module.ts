@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
+import { RedisConfig } from '@xbeat/server-toolkit';
 
-import { RedisConfig } from '../config/redis.config';
 import { SecurityConfig } from '../config/security.config';
 import { RedisWrapperModule } from '../redis-wrapper/redis-wrapper.module';
 import { UuidService } from './uuid.service';

@@ -1,4 +1,3 @@
-import { RequestResetPasswordInput } from './inputs/request-reset-password.input';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   BadRequestException,
@@ -9,27 +8,24 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseUserJwtPayload, DateService, ExistsType, MicroservicesConfig, StatusType } from '@xbeat/server-toolkit';
 
 import { CONFIRMATION, RESET, UUID } from '../common/constants/common.constant';
 import { Microservice } from '../common/constants/microservice.constant';
 import { REFRESH_TOKEN, TOKENS } from '../common/constants/token.constant';
 import { CookieSetterFunction, MicroserviceToken, TokenType } from '../common/constants/type.constant';
-import { BaseUserJwtPayload } from '../common/interfaces/jwt-payload.interface';
 import { AmqpConfig } from '../common/providers/config/amqp.config';
-import { MicroservicesConfig } from '../common/providers/config/microservices.config';
 import { SecurityConfig } from '../common/providers/config/security.config';
 import { CookieService } from '../common/providers/cookie/cookie.service';
-import { DateService } from '../common/providers/date/date.service';
 import { LocationIdentifierService } from '../common/providers/location-identifier/location-identifier.service';
 import { RedisWrapperService } from '../common/providers/redis-wrapper/redis-wrapper.service';
 import { TokenService } from '../common/providers/token/token.service';
 import { UuidService } from '../common/providers/uuid/uuid.service';
-import { ExistsType } from '../common/types/exists.type';
-import { StatusType } from '../common/types/status.type';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
-import { EmailRepository } from './../repositories/email.repository';
+import { EmailRepository } from '../repositories/email.repository';
 import { NewUserInput } from './inputs/new-user.input';
+import { RequestResetPasswordInput } from './inputs/request-reset-password.input';
 import { ResendConfirmationEmailInput } from './inputs/resend-confirmation-email.input';
 import { ResetPasswordInput } from './inputs/reset-password.input';
 import { SignInUserInput } from './inputs/sign-in-user.input';

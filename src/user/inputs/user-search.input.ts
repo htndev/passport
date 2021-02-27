@@ -1,15 +1,14 @@
-import { Field, InputType } from '@nestjs/graphql';
-
-const OPTIONS = { nullable: true };
+import { InputType } from '@nestjs/graphql';
+import { OptionalField } from '@xbeat/server-toolkit';
 
 @InputType({ description: 'Fields for searching user' })
 export class UserSearchInput {
-  @Field(OPTIONS)
+  @OptionalField()
   username: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   email: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   locationId: number;
 }

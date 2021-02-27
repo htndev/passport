@@ -1,20 +1,19 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
+import { OptionalField } from '@xbeat/server-toolkit';
 
 import { LocationInfo } from '../common/constants/type.constant';
 
-const OPTIONS = { nullable: true };
-
 @ObjectType()
 export class LocationType implements LocationInfo {
-  @Field(OPTIONS)
+  @OptionalField()
   country: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   code: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   city: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   region: string;
 }

@@ -1,5 +1,5 @@
-import { passwordRegexp, usernameRegexp } from '../../common/constants/regexp.constant';
 import { Field, InputType } from '@nestjs/graphql';
+import { passwordRegexp, usernameRegexp } from '@xbeat/toolkit';
 import { IsEmail, IsIP, IsLowercase, IsNotEmpty, Matches } from 'class-validator';
 
 @InputType({ description: 'Fields for new user' })

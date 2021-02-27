@@ -1,7 +1,6 @@
 import { Microservice } from '../../constants/microservice.constant';
 import * as Joi from 'joi';
-
-import { BaseConfig } from './base.config';
+import { BaseConfig } from '@xbeat/server-toolkit';
 
 interface SecurityConfigProps {
   COOKIE_SECRET: string;

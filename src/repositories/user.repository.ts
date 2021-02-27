@@ -1,4 +1,5 @@
-import { ConflictException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { buildFieldLabels } from '@xbeat/server-toolkit';
 import { genSalt, hash } from 'bcrypt';
 import { EntityRepository, Repository } from 'typeorm';
 
@@ -6,7 +7,6 @@ import { NewUserInput } from '../auth/inputs/new-user.input';
 import { SignInUserInput } from '../auth/inputs/sign-in-user.input';
 import { ErrorMessage } from '../common/constants/error.constant';
 import { AllowedUserFields } from '../common/constants/type.constant';
-import { buildFieldLabels } from '../common/utils/build-field-labels.util';
 import { Location } from '../entities/location.entity';
 import { User } from '../entities/user.entity';
 

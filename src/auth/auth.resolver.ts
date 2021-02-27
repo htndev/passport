@@ -1,13 +1,12 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { ExistsType, StatusType } from '@xbeat/server-toolkit';
 
 import { CookieSetterFunction } from '../common/constants/type.constant';
 import { CookieSetter } from '../common/decorators/cookie-setter.decorator';
 import { GetUuid } from '../common/decorators/get-uuid.decorator';
 import { NotAuthorizedUserGuard } from '../common/guards/auth/not-authorized-user.guard';
 import { HasUuidGuard } from '../common/guards/token/has-uuid.guard';
-import { ExistsType } from '../common/types/exists.type';
-import { StatusType } from '../common/types/status.type';
 import { AuthService } from './auth.service';
 import { NewUserInput } from './inputs/new-user.input';
 import { RequestResetPasswordInput } from './inputs/request-reset-password.input';

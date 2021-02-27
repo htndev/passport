@@ -1,7 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { passwordRegexp } from '@xbeat/toolkit';
 import { IsNotEmpty, Matches } from 'class-validator';
-
-import { passwordRegexp } from '../../common/constants/regexp.constant';
 
 @InputType()
 export class ResetPasswordInput {

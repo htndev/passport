@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { BaseUserJwtPayload, JwtPayload } from '@xbeat/server-toolkit';
 
 import { Microservice, MICROSERVICES } from '../../constants/microservice.constant';
 import { MicroserviceToken } from '../../constants/type.constant';
-import { BaseUserJwtPayload, JwtPayload } from '../../interfaces/jwt-payload.interface';
 import { SecurityConfig } from '../../providers/config/security.config';
 import { reduceAsync } from '../../utils/async-iterators.util';
 

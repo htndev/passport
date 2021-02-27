@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { buildFieldLabels } from '@xbeat/server-toolkit';
+import { isNil, Maybe } from '@xbeat/toolkit';
 import { EntityRepository, Repository } from 'typeorm';
 
-import { LocationInfo, Maybe } from '../common/constants/type.constant';
-import { buildFieldLabels } from '../common/utils/build-field-labels.util';
-import { isNil } from '../common/utils/object.util';
+import { LocationInfo } from '../common/constants/type.constant';
 import { Location } from '../entities/location.entity';
 import { LocationFilterInput } from '../location/inputs/location-filter.input';
 import { LocationSearchInput } from '../location/inputs/location-search.input';

@@ -1,12 +1,11 @@
-import { Field, InputType } from '@nestjs/graphql';
-
-const OPTIONS = { nullable: true };
+import { InputType } from '@nestjs/graphql';
+import { OptionalField } from '@xbeat/server-toolkit';
 
 @InputType({ description: 'Fields for searching user' })
 export class UserFilterInput {
-  @Field(OPTIONS)
+  @OptionalField()
   skip: number;
 
-  @Field(OPTIONS)
+  @OptionalField()
   limit: number;
 }

@@ -1,17 +1,16 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { ObjectType } from '@nestjs/graphql';
+import { OptionalField } from '@xbeat/server-toolkit';
 
 import { Microservice } from '../common/constants/microservice.constant';
 
-const OPTIONS = { nullable: true };
-
 @ObjectType()
 export class TokenType {
-  @Field(OPTIONS)
+  @OptionalField()
   [Microservice.MEDIA]?: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   [Microservice.PASSPORT]?: string;
 
-  @Field(OPTIONS)
+  @OptionalField()
   [Microservice.STUDIO]?: string;
 }
