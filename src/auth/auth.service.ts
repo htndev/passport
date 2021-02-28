@@ -1,3 +1,4 @@
+import { ApiEndpoint } from '@xbeat/toolkit';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   BadRequestException,
@@ -11,7 +12,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BaseUserJwtPayload, DateService, ExistsType, MicroservicesConfig, StatusType } from '@xbeat/server-toolkit';
 
 import { CONFIRMATION, RESET, UUID } from '../common/constants/common.constant';
-import { Microservice } from '../common/constants/microservice.constant';
 import { REFRESH_TOKEN, TOKENS } from '../common/constants/token.constant';
 import { CookieSetterFunction, MicroserviceToken, TokenType } from '../common/constants/type.constant';
 import { AmqpConfig } from '../common/providers/config/amqp.config';
@@ -283,7 +283,7 @@ export class AuthService {
     user: BaseUserJwtPayload,
     cookieSetter: CookieSetterFunction
   ): Promise<void> {
-    const actions = Object.keys(tokens).map(async (token: Microservice) => {
+    const actions = Object.keys(tokens).map(async (token: ApiEndpoint) => {
       return this.redisWrapperService.setToken(uuid, token, tokens[token], this.securityConfig.jwtAccessTokenExpiresIn);
     });
 

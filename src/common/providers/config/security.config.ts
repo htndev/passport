@@ -1,4 +1,4 @@
-import { Microservice } from '../../constants/microservice.constant';
+import { ApiEndpoint } from '@xbeat/toolkit';
 import * as Joi from 'joi';
 import { BaseConfig } from '@xbeat/server-toolkit';
 
@@ -59,15 +59,15 @@ export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
     return this.config.DEFAULT_PASSPORT_STRATEGY;
   }
 
-  getMicroserviceToken(service: Microservice): string {
+  getMicroserviceToken(service: ApiEndpoint): string {
     switch (service) {
-      case Microservice.PASSPORT: {
+      case ApiEndpoint.Passport: {
         return this.jwtPassportTokenSecret;
       }
-      case Microservice.MEDIA: {
+      case ApiEndpoint.Media: {
         return this.jwtMediaTokenSecret;
       }
-      case Microservice.STUDIO: {
+      case ApiEndpoint.Studio: {
         return this.jwtStudioTokenSecret;
       }
       default: {

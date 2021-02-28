@@ -1,7 +1,3 @@
-export enum Microservice {
-  PASSPORT = 'passport',
-  MEDIA = 'media',
-  STUDIO = 'studio'
-}
+import { ApiEndpoint } from '@xbeat/toolkit';
 
-export const MICROSERVICES: Microservice[] = [Microservice.PASSPORT, Microservice.STUDIO, Microservice.MEDIA];
+export const MICROSERVICES: ApiEndpoint[] = [ApiEndpoint.Passport, ApiEndpoint.Studio, ApiEndpoint.Media];

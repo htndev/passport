@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { BaseUserJwtPayload, JwtPayload } from '@xbeat/server-toolkit';
+import { ApiEndpoint } from '@xbeat/toolkit';
 
-import { Microservice, MICROSERVICES } from '../../constants/microservice.constant';
+import { MICROSERVICES } from '../../constants/microservice.constant';
 import { MicroserviceToken } from '../../constants/type.constant';
 import { SecurityConfig } from '../../providers/config/security.config';
 import { reduceAsync } from '../../utils/async-iterators.util';
@@ -17,7 +18,7 @@ export class TokenService {
     this.#logger.verbose(`Generating tokens for ${user.email}`);
     const tokens: Required<MicroserviceToken> = await reduceAsync(
       MICROSERVICES,
-      async (acc: any, microservice: Microservice) => ({
+      async (acc: any, microservice: ApiEndpoint) => ({
         ...(await acc),
         ...(await this.generateToken(microservice, user))
       }),
@@ -27,7 +28,7 @@ export class TokenService {
     return tokens;
   }
 
-  async generateToken(microserivce: Microservice, user: BaseUserJwtPayload): Promise<MicroserviceToken> {
+  async generateToken(microserivce: ApiEndpoint, user: BaseUserJwtPayload): Promise<MicroserviceToken> {
     const payload = {
       ...user,
       scope: microserivce

@@ -1,16 +1,15 @@
 import { ObjectType } from '@nestjs/graphql';
 import { OptionalField } from '@xbeat/server-toolkit';
-
-import { Microservice } from '../common/constants/microservice.constant';
+import { ApiEndpoint } from '@xbeat/toolkit';
 
 @ObjectType()
 export class TokenType {
   @OptionalField()
-  [Microservice.MEDIA]?: string;
+  [ApiEndpoint.Media]?: string;
 
   @OptionalField()
-  [Microservice.PASSPORT]?: string;
+  [ApiEndpoint.Passport]?: string;
 
   @OptionalField()
-  [Microservice.STUDIO]?: string;
+  [ApiEndpoint.Studio]?: string;
 }

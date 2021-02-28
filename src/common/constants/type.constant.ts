@@ -1,12 +1,12 @@
+import { ApiEndpoint } from '@xbeat/toolkit';
 import { CookieOptions } from 'express';
 
 import { User as UserEntity } from '../../entities/user.entity';
-import { Microservice } from './microservice.constant';
 import { REFRESH_TOKEN } from './token.constant';
 
-export type Cookies = Record<Microservice, string>;
+export type Cookies = Record<ApiEndpoint, string>;
 
-export type TokenType = Microservice | typeof REFRESH_TOKEN;
+export type TokenType = ApiEndpoint | typeof REFRESH_TOKEN;
 
 export interface LocationInfo {
   readonly country: string;
@@ -21,7 +21,7 @@ export const DatabaseErrorMessages = {
 
 export type PromisePick<T, K extends keyof T> = Promise<Pick<T, K>>;
 
-export type MicroserviceToken = { [k in Microservice]?: string };
+export type MicroserviceToken = { [k in ApiEndpoint]?: string };
 
 export type MicroserviceTokens = { tokens: Required<MicroserviceToken> };
 
