@@ -59,6 +59,10 @@ export class SecurityConfig extends BaseConfig<SecurityConfigProps> {
     return this.config.DEFAULT_PASSPORT_STRATEGY;
   }
 
+  get jwtSecret(): string {
+    return this.jwtPassportTokenSecret;
+  }
+
   getMicroserviceToken(service: ApiEndpoint): string {
     switch (service) {
       case ApiEndpoint.Passport: {

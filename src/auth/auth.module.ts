@@ -1,7 +1,7 @@
-import { ApiEndpoint } from '@xbeat/toolkit';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtStrategyFactory, AppConfig } from '@xbeat/server-toolkit';
+import { JwtStrategyFactory } from '@xbeat/server-toolkit';
+import { ApiEndpoint } from '@xbeat/toolkit';
 
 import { CommonModule } from '../common/common.module';
 import { ConfigModule as ConfigManagerModule } from '../common/providers/config/config.module';
@@ -13,10 +13,11 @@ import { UuidModule } from '../common/providers/uuid/uuid.module';
 import { EmailRepository } from '../repositories/email.repository';
 import { LocationRepository } from '../repositories/location.repository';
 import { UserRepository } from '../repositories/user.repository';
+import { SecurityConfig } from '../common/providers/config/security.config';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 
-const JwtStrategy = JwtStrategyFactory(ApiEndpoint.Passport, UserRepository, AppConfig);
+const JwtStrategy = JwtStrategyFactory(ApiEndpoint.Passport, UserRepository, SecurityConfig);
 
 @Module({
   imports: [
