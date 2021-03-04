@@ -1,9 +1,9 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { ExistsType, GraphQLJwtGuard, StatusType } from '@xbeat/server-toolkit';
+import { ExistsType, GraphQLJwtGuard, StatusType, UserJwtPayload, CurrentUser } from '@xbeat/server-toolkit';
 import { Maybe } from '@xbeat/toolkit';
 
-import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { GetUuid } from '../common/decorators/get-uuid.decorator';
 import { Location } from '../entities/location.entity';
 import { User } from '../entities/user.entity';
 import { LocationService } from '../location/location.service';
@@ -22,18 +22,19 @@ export class UserResolver {
   @Mutation(() => StatusType)
   async updateAvatar(
     @Args('avatar', { nullable: false }) avatar: string,
-    @CurrentUser() user: UserType
+    @CurrentUser('graphql') user: UserJwtPayload
   ): Promise<StatusType> {
     return this.userService.updateUserAvatar(avatar, user);
   }
 
   @UseGuards(GraphQLJwtGuard)
   @Mutation(() => StatusType)
-  async updateUserInfo(@Args('updateUserInfoInput') userInfo: UpdateUserInfoInput): Promise<StatusType> {
-    // console.log(userInfo);
-    return {
-      status: 200
-    };
+  async updateUserInfo(
+    @CurrentUser('graphql') user: UserJwtPayload,
+    @GetUuid() uuid: string,
+    @Args('updateUserInfoInput') info: UpdateUserInfoInput
+  ): Promise<StatusType> {
+    return this.userService.updateUserInfo(user, uuid, info);
   }
 
   @Query(() => ExistsType)
@@ -55,7 +56,7 @@ export class UserResolver {
 
   @UseGuards(GraphQLJwtGuard)
   @Query(() => UserType)
-  async me(@CurrentUser() user: UserType): Promise<Omit<User, 'password'>> {
+  async me(@CurrentUser('graphql') user: UserType): Promise<Omit<User, 'password'>> {
     return this.userService.getUser(user.username);
   }
 

@@ -1,13 +1,14 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { OptionalField } from '@xbeat/server-toolkit';
 import { passwordRegexp, usernameRegexp } from '@xbeat/toolkit';
-import { IsEmail, IsIP, IsLowercase, IsNotEmpty, Matches } from 'class-validator';
+import { IsIP, IsLowercase, IsNotEmpty, Matches } from 'class-validator';
+import { IsEmail } from '../../common/utils/is-email.util';
 
 @InputType({ description: 'Fields for new user' })
 export class NewUserInput {
   @Field()
   @IsNotEmpty()
-  @IsEmail({ allow_ip_domain: false }, { message: 'Email is not in email format. E.g, john.doe@example.com' })
+  @IsEmail
   email: string;
 
   @Field()

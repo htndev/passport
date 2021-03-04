@@ -1,6 +1,8 @@
 import { InputType } from '@nestjs/graphql';
 import { OptionalField } from '@xbeat/server-toolkit';
-import { IsEmail, IsLowercase, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsLowercase, IsNotEmpty, IsOptional } from 'class-validator';
+
+import { IsEmail } from '../../common/utils/is-email.util';
 
 @InputType()
 export class ExistsUserInput {
@@ -13,6 +15,6 @@ export class ExistsUserInput {
   @OptionalField()
   @IsOptional()
   @IsNotEmpty()
-  @IsEmail({ allow_ip_domain: false }, { message: 'Email is not in email format. E.g, john.doe@example.com' })
+  @IsEmail
   email?: string;
 }

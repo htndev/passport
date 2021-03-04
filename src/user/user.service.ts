@@ -1,16 +1,28 @@
-import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { SecurityConfig } from './../common/providers/config/security.config';
+import { ApiEndpoint } from '@xbeat/toolkit';
+import { TokenType } from './../tokens/token.type';
+import { isEmpty } from 'lodash';
+import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ExistsType, StatusType } from '@xbeat/server-toolkit';
+import { ExistsType, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
 
+import { TokenService } from '../common/providers/token/token.service';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
+import { RedisWrapperService } from './../common/providers/redis-wrapper/redis-wrapper.service';
 import { ExistsUserInput } from './inputs/exists-user.input';
+import { UpdateUserInfoInput } from './inputs/update-user-info.input';
 import { UserSearchInput } from './inputs/user-search.input';
 import { UserType } from './user.type';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(UserRepository) private readonly userRepository: UserRepository) {}
+  constructor(
+    @InjectRepository(UserRepository) private readonly userRepository: UserRepository,
+    private readonly redisWrapperService: RedisWrapperService,
+    private readonly tokenService: TokenService,
+    private readonly securityConfig: SecurityConfig
+  ) {}
 
   async getUser(username: string): Promise<User> {
     const user = await this.userRepository.findUserByUsername(username, [
@@ -36,8 +48,8 @@ export class UserService {
     return this.userRepository.getUsersLike({ username: searchCriteria.username }) as any;
   }
 
-  async updateUserAvatar(avatarUrl: string, user: UserType): Promise<StatusType> {
-    const me = await this.userRepository.findById(user.id);
+  async updateUserAvatar(avatarUrl: string, user: UserJwtPayload): Promise<StatusType> {
+    const me = await this.userRepository.findById(+user.id);
 
     if (!me) {
       throw new NotFoundException('User not found');
@@ -68,6 +80,67 @@ export class UserService {
 
     return {
       exists: user !== undefined
+    };
+  }
+
+  async updateUserInfo(
+    { id, email: currentEmail, username: currentUsername }: UserJwtPayload,
+    uuid: string,
+    { username, email }: UpdateUserInfoInput
+  ): Promise<StatusType> {
+    if (!username && !email) {
+      throw new BadRequestException('Email or username should be provided');
+    }
+
+    const options: Partial<{ username: string; email: string }> = {};
+
+    if (username && username !== currentUsername) {
+      const isUserExists = await this.userRepository.findUserByUsername(username);
+
+      if (isUserExists) {
+        throw new ConflictException(`User with username ${username} is already exists`);
+      }
+    }
+
+    if (email && email === currentEmail) {
+      const isUserExists = await this.userRepository.findUserByEmail(email);
+
+      if (isUserExists) {
+        throw new ConflictException(`User with email ${email} is already exists`);
+      }
+    }
+
+    const user = await this.userRepository.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (username) {
+      user.username = username;
+    }
+
+    if (email) {
+      user.email = email;
+    }
+
+    await user.save();
+
+    const tokens = await this.tokenService.generateTokens(user);
+
+    await Promise.all(
+      Object.keys(tokens).map(async (tokenType: ApiEndpoint) =>
+        this.redisWrapperService.setToken(
+          uuid,
+          tokenType,
+          tokens[tokenType],
+          this.securityConfig.jwtAccessTokenExpiresIn
+        )
+      )
+    );
+
+    return {
+      status: HttpStatus.OK
     };
   }
 }

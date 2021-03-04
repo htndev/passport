@@ -28,9 +28,10 @@ export class TokenService {
     return tokens;
   }
 
-  async generateToken(microserivce: ApiEndpoint, user: BaseUserJwtPayload): Promise<MicroserviceToken> {
+  async generateToken(microserivce: ApiEndpoint, { email, username }: BaseUserJwtPayload): Promise<MicroserviceToken> {
     const payload = {
-      ...user,
+      email,
+      username,
       scope: microserivce
     };
 

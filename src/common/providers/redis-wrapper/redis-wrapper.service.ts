@@ -72,11 +72,10 @@ export class RedisWrapperService {
     return isDeleted > 0;
   }
 
-  async setToken(uuid: string, tokenType: TokenType, token: string, expires: number): Promise<void> {
-    await this.set(this.formatKey(uuid, tokenType), token, {
+  async setToken(uuid: string, tokenType: TokenType, token: string, expires: number): Promise<Nullable<Ok>> {
+    return this.set(this.formatKey(uuid, tokenType), token, {
       expiryMode: 'EX',
-      time: expires,
-      setMode: 'NX'
+      time: expires
     });
   }
 

@@ -1,11 +1,13 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
+
+import { IsEmail } from '../../common/utils/is-email.util';
 
 @InputType()
 export class ResendConfirmationEmailInput {
   @Field()
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail
   email: string;
 
   @Field()
