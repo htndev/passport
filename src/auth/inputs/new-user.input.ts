@@ -2,6 +2,8 @@ import { Field, InputType } from '@nestjs/graphql';
 import { OptionalField } from '@xbeat/server-toolkit';
 import { passwordRegexp, usernameRegexp } from '@xbeat/toolkit';
 import { IsIP, IsLowercase, IsNotEmpty, Matches } from 'class-validator';
+
+import { Language } from '../../common/constants/languages.constant';
 import { IsEmail } from '../../common/utils/is-email.util';
 
 @InputType({ description: 'Fields for new user' })
@@ -28,5 +30,5 @@ export class NewUserInput {
   ip: string;
 
   @OptionalField({ defaultValue: 'en' })
-  lang: string;
+  lang: Language;
 }

@@ -1,6 +1,7 @@
+import { UserPreferences } from './user-preferences.entity';
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
 import { compare } from 'bcrypt';
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Email } from './email.entity';
 import { Location } from './location.entity';
@@ -38,7 +39,7 @@ export class User extends EnhancedBaseEntity {
   })
   avatar: string;
 
-  @ManyToOne(() => Location, (location) => location.users, { eager: false })
+  @ManyToOne(() => Location, (location) => location.users, { eager: true })
   @JoinColumn()
   location: Location;
 
@@ -53,6 +54,13 @@ export class User extends EnhancedBaseEntity {
 
   @OneToMany(() => Email, (email) => email.user)
   emails: Email[];
+
+  @JoinColumn()
+  @OneToOne(() => UserPreferences, { eager: false })
+  preferences: UserPreferences;
+
+  @Column()
+  preferencesId: number;
 
   async comparePasswords(password: string): Promise<boolean> {
     return compare(password, this.password);

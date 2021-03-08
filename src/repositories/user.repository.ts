@@ -1,3 +1,4 @@
+import { UserPreferences } from './../entities/user-preferences.entity';
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { buildFieldLabels } from '@xbeat/server-toolkit';
 import { genSalt, hash } from 'bcrypt';
@@ -20,15 +21,21 @@ export class UserRepository extends Repository<User> {
     email,
     username,
     password,
-    location
-  }: Omit<NewUserInput, 'ip' | 'lang'> & { location: Location }): Promise<User> {
+    location,
+    lang
+  }: Omit<NewUserInput, 'ip'> & { location: Location }): Promise<User> {
     const user = new User();
     const { password: hashedPassword } = await this.hashPassword(password);
+
+    const preferences = new UserPreferences();
+    preferences.language = lang;
+    await preferences.save();
 
     user.email = email;
     user.username = username;
     user.password = hashedPassword;
     user.location = location;
+    user.preferences = preferences;
 
     return user.save();
   }

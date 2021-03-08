@@ -1,14 +1,12 @@
-import { SecurityConfig } from './../common/providers/config/security.config';
-import { ApiEndpoint } from '@xbeat/toolkit';
-import { TokenType } from './../tokens/token.type';
-import { isEmpty } from 'lodash';
 import { BadRequestException, ConflictException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExistsType, StatusType, UserJwtPayload } from '@xbeat/server-toolkit';
+import { ApiEndpoint } from '@xbeat/toolkit';
 
 import { TokenService } from '../common/providers/token/token.service';
 import { User } from '../entities/user.entity';
 import { UserRepository } from '../repositories/user.repository';
+import { SecurityConfig } from './../common/providers/config/security.config';
 import { RedisWrapperService } from './../common/providers/redis-wrapper/redis-wrapper.service';
 import { ExistsUserInput } from './inputs/exists-user.input';
 import { UpdateUserInfoInput } from './inputs/update-user-info.input';
@@ -91,8 +89,6 @@ export class UserService {
     if (!username && !email) {
       throw new BadRequestException('Email or username should be provided');
     }
-
-    const options: Partial<{ username: string; email: string }> = {};
 
     if (username && username !== currentUsername) {
       const isUserExists = await this.userRepository.findUserByUsername(username);

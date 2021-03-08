@@ -2,21 +2,22 @@ import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/
 import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import {
   AppConfig,
   DatabaseConfig,
   formatGqlError,
   NodeEnvironment,
   RedisConfig,
-  RequestLoggerMiddleware
+  RequestLoggerMiddleware,
 } from '@xbeat/server-toolkit';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { RedisModule } from 'nestjs-redis';
 
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { ConfigModule as ConfigManagerModule } from './common/providers/config/config.module';
 import { LocationModule } from './location/location.module';
+import { PreferencesModule } from './preferences/preferences.module';
 import { TokensModule } from './tokens/tokens.module';
 import { UserModule } from './user/user.module';
 
@@ -88,7 +89,8 @@ import { UserModule } from './user/user.module';
     CommonModule,
     TokensModule,
     UserModule,
-    LocationModule
+    LocationModule,
+    PreferencesModule
   ],
   providers: [
     {

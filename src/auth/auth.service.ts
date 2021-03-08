@@ -76,7 +76,8 @@ export class AuthService {
       email,
       username,
       location,
-      password
+      password,
+      lang
     });
 
     await this.sendConfirmationEmail({ email, lang, id: user.id });
