@@ -76,24 +76,6 @@ export class UserRepository extends Repository<User> {
       .getOne();
   }
 
-  async updatePassword(id: number, password: string): Promise<void> {
-    const user = await this.findOne({ id });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    if (await user.comparePasswords(password)) {
-      throw new BadRequestException('New password should be different from the current password');
-    }
-
-    const { password: newPassword } = await this.hashPassword(password);
-
-    user.password = newPassword;
-
-    await user.save();
-  }
-
   private async hashPassword(password: string): Promise<{ password: string }> {
     const salt = await genSalt();
 

@@ -1,6 +1,7 @@
+import { Nullable } from '@xbeat/toolkit';
 import { UserPreferences } from './user-preferences.entity';
 import { EnhancedBaseEntity } from '@xbeat/server-toolkit';
-import { compare } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Email } from './email.entity';
@@ -37,7 +38,7 @@ export class User extends EnhancedBaseEntity {
     type: 'varchar',
     nullable: true
   })
-  avatar: string;
+  avatar: Nullable<string>;
 
   @ManyToOne(() => Location, (location) => location.users, { eager: true })
   @JoinColumn()
@@ -64,5 +65,13 @@ export class User extends EnhancedBaseEntity {
 
   async comparePasswords(password: string): Promise<boolean> {
     return compare(password, this.password);
+  }
+
+  async updatePassword(password: string): Promise<this> {
+    const salt = await genSalt();
+
+    this.password = await hash(password, salt);
+
+    return this.save();
   }
 }

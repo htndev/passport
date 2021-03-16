@@ -195,7 +195,13 @@ export class AuthService {
       throw new NotFoundException('User not found');
     }
 
-    await this.userRepository.updatePassword(+userId, password);
+    const user = await this.userRepository.findOne(userId);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    await user.updatePassword(password);
 
     await this.redisWrapperService.delSpecialToken(RESET, token);
 
