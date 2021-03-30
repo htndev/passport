@@ -60,7 +60,6 @@ export class User extends EnhancedBaseEntity {
   @OneToOne(() => UserPreferences, { eager: false })
   preferences: UserPreferences;
 
-  @Column()
   preferencesId: number;
 
   async comparePasswords(password: string): Promise<boolean> {

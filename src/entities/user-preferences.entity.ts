@@ -21,6 +21,6 @@ export class UserPreferences extends EnhancedBaseEntity {
   })
   profileType: ProfileType;
 
-  @OneToOne(() => User, (user) => user.preferences)
+  @OneToOne(() => User, (user) => user.preferences, { eager: false })
   user: User;
 }
