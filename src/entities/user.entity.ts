@@ -56,10 +56,11 @@ export class User extends EnhancedBaseEntity {
   @OneToMany(() => Email, (email) => email.user)
   emails: Email[];
 
-  @JoinColumn()
   @OneToOne(() => UserPreferences, { eager: false })
+  @JoinColumn()
   preferences: UserPreferences;
 
+  @Column()
   preferencesId: number;
 
   async comparePasswords(password: string): Promise<boolean> {
